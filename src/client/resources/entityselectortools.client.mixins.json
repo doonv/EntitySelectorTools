@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "doonv.entityselectortools.mixin.client",
+  "plugin": "doonv.entityselectortools.mixin.MixinPlugin",
+  "compatibilityLevel": "${java}",
+  "client": [
+    "AxiomToolIconOverrideMixin",
+    "ClientCommonPacketListenerImplMixin",
+    "ClientPacketListenerMixin",
+    "ServerboundSetCommandMinecartPacketAccessor",
+    "MinecraftMixin",
+    "MultiPlayerGameModeMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,85 @@
+{
+    "entityselectortools.no-mod-on-server-warning": "[Entity Selector Tools] Warning: Server is missing mod. Server entity volume visualization disabled.",
+    "key.category.entityselectortools.controls": "Entity Selector Tools",
+    "key.entityselectortools.copyCreation": "Copy Creation",
+    "entityselectortools.box-create": {
+        "hud.pos1": "[%1$s] First Point",
+        "hud.pos2": "[%1$s] Second Point",
+        "hud.extend": "[%1$s] Extend",
+        "hud.copy": "[Ctrl+%1$s] Copy Creation",
+        "copy-success": "Successfully copied to clipboard!",
+        "copy-no-creation": "Create something first.",
+    },
+    "yacl3.config.entityselectortools:config": {
+        "category.preview": "Preview",
+        "category.preview.group.commandBlock": "Command Block Volumes",
+        "commandBlockVolumesEnabled": "Enabled",
+        "commandBlockVolumesEnabled.desc": [
+            "Entity selector volumes used by command blocks.\n",
+            "These are created client-side by reading the command block's command and looking for entity selectors.\n",
+            "The command parser is text-only, and quite primitive. So it has a few limitations:\n",
+            " - ",
+            {
+                "text": "execute at",
+                "color": "light_purple"
+            },
+            " is not supported.\n",
+            " - Anything to do with rotations (",
+            {
+                "text": "execute rotated",
+                "color": "light_purple"
+            },
+            "/",
+            {
+                "text": "facing",
+                "color": "light_purple"
+            },
+            ") is not supported.",
+        ],
+        "commandBlockBoxColor": "Box Color",
+        "commandBlockSphereMinColor": "Sphere Minimum Distance Color",
+        "commandBlockSphereMaxColor": "Sphere Maximum Distance Color",
+        "category.preview.group.server": "Server Volumes",
+        "serverVolumesEnabled": "Enabled",
+        "serverVolumesEnabled.desc": [
+            "Entity selector volumes used by the server, mostly datapacks.\n",
+            "These are dynamic and only render when the server just checked that volume. ",
+            "They are always accurate, at the cost of not showing inactive functions, and they also need to be sent by the server every single tick.\n",
+            "They require the server to also have Entity Selector Tools installed."
+        ],
+        "serverBoxColor": "Box Color",
+        "serverSphereMinColor": "Sphere Minimum Distance Color",
+        "serverSphereMaxColor": "Sphere Maximum Distance Color",
+        "serverVolumeExpiryTimeMillis": "Expiry Time",
+        "serverVolumeExpiryTimeMillis.desc": "Server volumes are sent to the client every tick by the server. This config changes how long to render server volumes for after getting them from the server in milliseconds.\nIncrease this value on unstable connections.",
+        "category.preview.group.sphereRendering": "Sphere Rendering",
+        "sphereSegments": "Sphere Segments",
+        "adaptiveSphereResolution": "Adaptive Sphere Resolution",
+        "adaptiveSphereResolution.desc": "Reduces sphere detail when the sphere is far away from the camera to improve performance.",
+        "sphereSegments.desc": "Controls the resolution of the rendered spheres. Higher values make smoother spheres but may impact performance.",
+        "sphereBackgroundTransparency": "Sphere Background Transparency",
+        "sphereBackgroundTransparency.desc": "Controls the opacity of the backgrounds of rendered spheres.",
+        "category.creation": "Creation",
+        "category.creation.group.boxCreation": "Box Creation",
+        "boxCreationWithWand": "Box Creation with Wand",
+        "wandItem": "Wand Item",
+        "wandItem.desc": "The item used to select the corners of a box volume.",
+        "boxCreationWithAxiomTool": "Box Creation as Axiom Tool",
+        "boxCreationWithAxiomTool.desc": [
+            "Registers the box creation tool as a builder tool in Axiom's 10th hotbar slot (requires Axiom and ",
+            {
+                "text": "a full game restart",
+                "color": "red",
+                "bold": true
+            },
+            {
+                "text": ").",
+                "color": "white",
+                "bold": false
+            }
+        ],
+        "airPlaceDistance": "Air Selection Distance",
+        "airPlaceDistance.desc": "If a block is within this distance, it will be picked; otherwise, a point is placed in mid-air at exactly this distance.",
+        "selectionColor": "Selection Color"
+    }
+}

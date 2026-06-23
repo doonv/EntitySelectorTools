@@ -1,0 +1,57 @@
+publish.modrinth = "FvEITava"
+publish.curseforge = 1585354
+
+[mod]
+version = "1.0.0"
+group = "doonv.entityselectortools"
+id = "entityselectortools"
+name = "Entity Selector Tools"
+
+[deps]
+fabric_loader = "0.18.4"
+mixinextras = "0.5.3"
+
+["1.21.10"]
+parchment = "2025.10.12"
+
+deps.fabric_api = "0.138.4"
+deps.yacl = "3.8.2"
+deps.modmenu = "16.0.1"
+
+deps.minecraft = "1.21.10"
+mod.mc_title = "1.21.10"
+mod.mc_targets = "1.21.10"
+
+["1.21.11"]
+parchment = "2025.12.20"
+
+deps.fabric_api = "0.141.3"
+deps.yacl = "3.8.2"
+deps.modmenu = "17.0.0"
+
+deps.minecraft = "1.21.11"
+mod.mc_title = "1.21.11"
+mod.mc_targets = "1.21.11"
+
+["26.1.2"]
+deps.fabric_api = "0.149.1"
+deps.yacl = "3.9.4+26.1"
+deps.modmenu = "18.0.0-alpha.7"
+
+deps.axiom = "AfA2Emww"
+
+deps.minecraft = "~26.1"
+mod.mc_title = "26.1.2"
+mod.mc_targets = "26.1 26.1.1 26.1.2"
+
+["26.2"]
+deps.fabric_api = "0.153.0"
+deps.yacl = "3.9.4+26.2"
+deps.modmenu = "20.0.0-beta.3"
+
+deps.axiom = "QO99kC52"
+
+deps.minecraft = ">=26.2"
+mod.mc_title = "26.2"
+mod.mc_targets = "26.2"
+

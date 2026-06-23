@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Tools for previewing and creating entity selector volumes.",
+  "authors": [
+    "Doonv"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/project/FvEITava",
+    "sources": "https://github.com/doonv/EntitySelectorTools",
+    "issues": "https://github.com/doonv/EntitySelectorTools/issues"
+  },
+  "license": "LGPL-3.0+",
+  "icon": "assets/entityselectortools/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "doonv.entityselectortools.EntitySelectorTools"
+    ],
+    "client": [
+      "doonv.entityselectortools.EntitySelectorToolsClient"
+    ],
+    "modmenu": [
+      "doonv.entityselectortools.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "entityselectortools.mixins.json",
+    {
+      "config": "entityselectortools.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric}",
+    "minecraft": "${minecraft}",
+    "fabric-api": "*",
+    "yet_another_config_lib_v3": "~${yacl}"
+  }
+}

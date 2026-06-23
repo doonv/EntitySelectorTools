@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "doonv.entityselectortools.mixin",
+  "compatibilityLevel": "${java}",
+  "mixins": [
+    "EntitySelectorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
