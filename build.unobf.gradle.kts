@@ -116,6 +116,13 @@ tasks {
         exclude("**/*.kra", "**/*.aseprite")
     }
 
+    withType<Jar>().configureEach {
+        metaInf {
+            from(rootProject.file("LICENSE.md"))
+            from(rootProject.file("LICENSE.LESSER.md"))
+        }
+    }
+
     // Builds the version into a shared folder in `build/libs/${mod version}/`
     register<Copy>("buildAndCollect") {
         group = "build"
@@ -125,7 +132,6 @@ tasks {
     }
 }
 
-// Publishes builds to Modrinth and Curseforge with changelog from the CHANGELOG.md file
 publishMods {
     file = tasks.jar.map { it.archiveFile.get() }
     additionalFiles.from(
