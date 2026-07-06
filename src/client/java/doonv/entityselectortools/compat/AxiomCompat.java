@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import sun.misc.Unsafe;
 import java.util.List;
 
 /// Handles compatibility with Axiom without creating a hard dependency.
@@ -83,7 +84,8 @@ public class AxiomCompat {
     }
 
     /// Registers our creation tool as an Axiom BuilderTool in the 10th slot.
-    /// Injects into `BuilderToolManager.tools` via reflection.
+    /// Replaces `BuilderToolManager.tools` via `Unsafe.putObject` to work around JDK 12+'s
+    /// restriction on `Field.set()` for `static final` fields, and Axiom's immutable list.
     public static void registerBuilderTool() {
         if (!IS_AXIOM_LOADED || registrationDone) return;
         registrationDone = true;
@@ -102,36 +104,24 @@ public class AxiomCompat {
 
             getToolSlotSelectedMethod = managerClass.getMethod("getToolSlotSelected");
 
-            List<?> originalTools = (List<?>) toolsField.get(null);
-            List<Object> newTools = new ArrayList<>(originalTools);
-            newTools.add(selectorBuilderToolProxy);
-            ourToolIndex = newTools.size() - 1;
+            @SuppressWarnings("unchecked")
+            List<Object> tools = (List<Object>) toolsField.get(null);
+            List<Object> mutableTools = new ArrayList<>(tools);
+            mutableTools.add(selectorBuilderToolProxy);
+            ourToolIndex = mutableTools.size() - 1;
 
-            setFinalStaticField(toolsField, newTools);
+            Field unsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+            unsafeField.setAccessible(true);
+            Unsafe unsafe = (Unsafe) unsafeField.get(null);
+            Object base = unsafe.staticFieldBase(toolsField);
+            long offset = unsafe.staticFieldOffset(toolsField);
+            unsafe.putObject(base, offset, mutableTools);
             toolsFieldPatched = true;
 
             EntitySelectorTools.LOGGER.info("Registered Entity Selector as Axiom BuilderTool at index {}",
                     ourToolIndex);
         } catch (Exception e) {
             EntitySelectorTools.LOGGER.error("Failed to register Axiom BuilderTool", e);
-        }
-    }
-
-    /// Sets a static final field to a new value using Unsafe (bypasses Java 17+ module restrictions).
-    private static void setFinalStaticField(Field field, Object newValue) throws Exception {
-        try {
-            field.set(null, newValue);
-        } catch (Exception e) {
-            Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
-            Field unsafeField = unsafeClass.getDeclaredField("theUnsafe");
-            unsafeField.setAccessible(true);
-            Object unsafe = unsafeClass.cast(unsafeField.get(null));
-            Method sfb = unsafeClass.getMethod("staticFieldBase", Field.class);
-            Method sfo = unsafeClass.getMethod("staticFieldOffset", Field.class);
-            Method putObj = unsafeClass.getMethod("putObject", Object.class, long.class, Object.class);
-            Object base = sfb.invoke(unsafe, field);
-            long offset = (long) sfo.invoke(unsafe, field);
-            putObj.invoke(unsafe, base, offset, newValue);
         }
     }
 

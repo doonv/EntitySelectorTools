@@ -41,6 +41,7 @@ public abstract class EntitySelectorMixin {
             //~ if >=26.1 '"aABB"' -> '"absoluteAabb"'
             @Local(name = "absoluteAabb") @Nullable AABB absoluteAabb
     ) {
+        // Jank method of filtering out command blocks
         if (!sender.isSilent()) {
             return;
         }

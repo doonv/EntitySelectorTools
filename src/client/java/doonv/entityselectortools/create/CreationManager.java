@@ -88,7 +88,6 @@ public class CreationManager {
             return;
         }
 
-        // Calculate the new boundaries including the current creation AND the new click
         int minX = Math.min(clickedPos.getX(), Math.min(pos1.getX(), pos2.getX()));
         int minY = Math.min(clickedPos.getY(), Math.min(pos1.getY(), pos2.getY()));
         int minZ = Math.min(clickedPos.getZ(), Math.min(pos1.getZ(), pos2.getZ()));
