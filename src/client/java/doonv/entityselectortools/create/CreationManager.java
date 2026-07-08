@@ -5,6 +5,9 @@ import doonv.entityselectortools.EntitySelectorToolsClient;
 import doonv.entityselectortools.compat.AxiomCompat;
 import doonv.entityselectortools.config.ClientConfig;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -27,34 +30,31 @@ public class CreationManager {
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
 
-            if (!inWandCreationMode(client.player) && CreationManager.hasCreation()) {
+            if (!inWandCreationMode(client.player) && CreationManager.hasVolume()) {
                 CreationManager.clear();
             }
         });
 
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (client.player != null && inWandCreationMode(client.player)) {
-                AxiomCompat.suppressAxiomCopy();
-            }
-        });
-
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-
-            while (EntitySelectorToolsClient.COPY_KEY.consumeClick()) {
-                if (!client.hasControlDown()) continue;
-
-                if (client.player == null || !inWandCreationMode(client.player)) continue;
-
-                asSelector().ifPresentOrElse(selector -> {
-                            client.keyboardHandler.setClipboard(selector);
-
-                            overlayMessage(client.player, Component.translatable(
-                                    "%s.box-create.copy-success".formatted(EntitySelectorTools.MOD_ID)));
-                        }, () -> overlayMessage(client.player, Component.translatable(
-                                "%s.box-create.copy-no-creation".formatted(EntitySelectorTools.MOD_ID)))
-                );
-            }
+            copyFunctionality(EntitySelectorToolsClient.COPY_AS_SELECTOR_KEY, client, asSelector());
+            copyFunctionality(EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY, client, asPredicate());
         });
+    }
+
+    private static void copyFunctionality(KeyMapping key, Minecraft client, Optional<String> selector) {
+        while (key.consumeClick()) {
+            if (client.player == null || !inWandCreationMode(client.player)) continue;
+
+            selector.ifPresentOrElse(s -> {
+                        client.keyboardHandler.setClipboard(s);
+
+                        overlayMessage(client.player, Component.translatable(
+                                "%s.boxCreate.copySuccess".formatted(EntitySelectorTools.MOD_ID)));
+                    }, () -> overlayMessage(client.player, Component.translatable(
+                                    "%s.boxCreate.copyNoCreation".formatted(EntitySelectorTools.MOD_ID))
+                            .withStyle(ChatFormatting.RED))
+            );
+        }
     }
 
     public static void clear() {
@@ -62,11 +62,11 @@ public class CreationManager {
         pos2 = null;
     }
 
-    public static boolean hasCreation() {
+    public static boolean hasVolume() {
         return pos1 != null || pos2 != null;
     }
 
-    public static Optional<AABB> creation() {
+    public static Optional<AABB> volume() {
         if (pos1 == null && pos2 == null) {
             return Optional.empty();
         } else if (pos2 == null) {
@@ -111,8 +111,30 @@ public class CreationManager {
     }
 
     public static Optional<String> asSelector() {
-        return creation().map(s -> "x=%.0f,y=%.0f,z=%.0f,dx=%.0f,dy=%.0f,dz=%.0f".formatted(s.minX, s.minY, s.minZ,
+        return volume().map(s -> "x=%.0f,y=%.0f,z=%.0f,dx=%.0f,dy=%.0f,dz=%.0f".formatted(s.minX, s.minY, s.minZ,
                 s.maxX - s.minX - 1, s.maxY - s.minY - 1, s.maxZ - s.minZ - 1));
+    }
+
+    public static Optional<String> asPredicate() {
+        return volume().map(s -> """
+                "position": {
+                    "x": {
+                        "min": %.0f,
+                        "max": %.0f
+                    },
+                    "y": {
+                        "min": %.0f,
+                        "max": %.0f
+                    },
+                    "z": {
+                        "min": %.0f,
+                        "max": %.0f
+                    }
+                }
+                """.formatted(
+                s.minX, s.maxX,
+                s.minY, s.maxY,
+                s.minZ, s.maxZ));
     }
 
     public static boolean inWandCreationMode(LocalPlayer player) {

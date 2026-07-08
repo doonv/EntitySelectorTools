@@ -32,6 +32,7 @@ stonecutter parameters {
             replace("net.minecraft.client.renderer.RenderType", "net.minecraft.client.renderer.rendertype.RenderType")
         }
         string(current.parsed >= "26.1") {
+            replace("_unused,", "_,")
             replace("GuiGraphics", "GuiGraphicsExtractor")
             replace(
                 "net.fabricmc.fabric.api.client.rendering.v1.world",

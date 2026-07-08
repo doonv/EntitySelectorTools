@@ -19,6 +19,10 @@ public record ServerSelectorPayload(EntitySelectorVolume volume) implements Cust
             new CustomPacketPayload.Type<>(
                     Identifier.fromNamespaceAndPath(EntitySelectorTools.MOD_ID, "datapack_selector"));
 
+    private static final int FROM_PREDICATE = 1;
+
+    private static final int IS_SERVER = 2;
+
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerSelectorPayload> CODEC = StreamCodec.composite(
             StreamCodec.of((buf, val) -> {
                 buf.writeDouble(val.center().x());
@@ -36,11 +40,20 @@ public record ServerSelectorPayload(EntitySelectorVolume volume) implements Cust
                 });
                 val.distance().min().ifPresentOrElse(buf::writeDouble, () -> buf.writeDouble(Double.NaN));
                 val.distance().max().ifPresentOrElse(buf::writeDouble, () -> buf.writeDouble(Double.NaN));
-            }, buf -> new EntitySelectorVolume(
-                    new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
-                    readOptionalAABB(buf),
-                    new MinMaxBounds.Bounds<>(readOptionalDouble(buf), readOptionalDouble(buf))
-            )),
+                byte flags = (byte) ((val.fromPredicate() ? FROM_PREDICATE : 0) | (val.isServer() ? IS_SERVER : 0));
+                buf.writeByte(flags);
+            }, buf -> {
+                Vec3 center = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+                Optional<AABB> aabb = readOptionalAABB(buf);
+                MinMaxBounds.Bounds<Double> distance = new MinMaxBounds.Bounds<>(readOptionalDouble(buf),
+                        readOptionalDouble(buf));
+                byte flags = buf.isReadable() ? buf.readByte() : 0; // fallback for backwards compatibility
+                return new EntitySelectorVolume(
+                        center, aabb, distance,
+                        (flags & FROM_PREDICATE) != 0,
+                        (flags & IS_SERVER) != 0
+                );
+            }),
             ServerSelectorPayload::volume,
             ServerSelectorPayload::new
     );

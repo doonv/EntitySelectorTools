@@ -98,7 +98,6 @@ public class SelectorParserUtils {
     }
 
     private static Optional<Vec3> getBoxDelta(EntitySelectorParser sr) {
-        Optional<Vec3> boxDelta;
         if (sr.getDeltaX() == null && sr.getDeltaY() == null && sr.getDeltaZ() == null) {
             return Optional.empty();
         } else {

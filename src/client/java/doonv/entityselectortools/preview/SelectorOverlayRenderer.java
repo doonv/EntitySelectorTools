@@ -5,10 +5,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-
-import net.minecraft.core.BlockPos;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -66,16 +65,14 @@ public class SelectorOverlayRenderer {
 
     //? if >=1.21.11 {
     private static void render(LevelRenderContext context) {
-        if (context.gameRenderer() == null) return;
         ClientConfig config = ClientConfig.get();
         //~ if >=26.2 'getMainCamera()' -> 'mainCamera()'
         Camera camera = context.gameRenderer().mainCamera();
 
         if (ClientConfig.get().commandBlockVolumesEnabled) {
-            COMMAND_BLOCK_SELECTORS.forEach((pos, volumes) -> {
+            COMMAND_BLOCK_SELECTORS.forEach((_, volumes) -> {
                 for (EntitySelectorVolume volume : volumes) {
-                    renderVolume(volume, camera, config.commandBlockBoxColor, config.commandBlockSphereMinColor,
-                            config.commandBlockSphereMaxColor, config);
+                    renderVolume(volume, camera, config);
                 }
             });
 
@@ -87,9 +84,7 @@ public class SelectorOverlayRenderer {
                     Vec3 pos = entity.getPosition(
                             Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(true));
                     for (VolumeTemplate template : templates) {
-                        renderVolume(template.evaluate(pos), camera, config.commandBlockBoxColor,
-                                config.commandBlockSphereMinColor,
-                                config.commandBlockSphereMaxColor, config);
+                        renderVolume(template.evaluate(pos), camera, config);
                     }
                 });
             }
@@ -105,18 +100,18 @@ public class SelectorOverlayRenderer {
                     if (now > vol.expiryTime) {
                         it.remove();
                     } else {
-                        renderVolume(vol.volume, camera, config.serverBoxColor, config.serverSphereMinColor,
-                                config.serverSphereMaxColor, config);
+                        renderVolume(vol.volume, camera, config);
                     }
                 }
             }
         }
     }
 
-    private static void renderVolume(EntitySelectorVolume volume, Camera camera, Color boxColor, Color sphereMinColor, Color sphereMaxColor, ClientConfig config) {
-        volume.aabb().ifPresent(vol -> {
-            Gizmos.cuboid(vol, GizmoStyle.stroke(boxColor.getRGB()));
-        });
+    private static void renderVolume(EntitySelectorVolume volume, Camera camera, ClientConfig config) {
+        Color boxColor = config.getBoxColor(volume);
+        Color sphereMinColor = config.getSphereMinColor(volume);
+        Color sphereMaxColor = config.getSphereMaxColor(volume);
+        volume.aabb().ifPresent(vol -> Gizmos.cuboid(vol, GizmoStyle.stroke(boxColor.getRGB())));
         volume.distance().min().ifPresent(radius -> {
             GizmoStyle s = GizmoStyle.strokeAndFill(sphereMinColor.getRGB(), 2.5F,
                     RenderUtils.multiplyAlpha(sphereMinColor,
@@ -151,29 +146,22 @@ public class SelectorOverlayRenderer {
         VertexConsumer backgroundConsumer = context.consumers().getBuffer(RenderType.debugStructureQuads());
 
         iterCommandBlockSelectorVolumes(volume ->
-                drawVolumeBackground(poseStack.last(), backgroundConsumer, volume, camera, config,
-                        config.commandBlockSphereMaxColor));
+                drawVolumeBackground(poseStack.last(), backgroundConsumer, volume, camera, config));
         iterMinecartSelectorVolumes(tickDelta, volume ->
-                drawVolumeBackground(poseStack.last(), backgroundConsumer, volume, camera, config,
-                        config.commandBlockSphereMaxColor));
+                drawVolumeBackground(poseStack.last(), backgroundConsumer, volume, camera, config));
         if (ClientConfig.get().serverVolumesEnabled)
             iterServerSelectorVolumes(volume ->
-                    drawVolumeBackground(poseStack.last(), backgroundConsumer, volume, camera, config,
-                            config.serverSphereMaxColor));
+                    drawVolumeBackground(poseStack.last(), backgroundConsumer, volume, camera, config));
 
         VertexConsumer linesConsumer = context.consumers().getBuffer(RenderType.lines());
         iterCommandBlockSelectorVolumes(volume ->
-                drawVolumeLines(poseStack.last(), linesConsumer, volume, camera, config, config.commandBlockBoxColor,
-                        config.commandBlockSphereMinColor, config.commandBlockSphereMaxColor));
+                drawVolumeLines(poseStack.last(), linesConsumer, volume, camera, config));
         iterMinecartSelectorVolumes(tickDelta, volume ->
-                drawVolumeLines(poseStack.last(), linesConsumer, volume, camera, config, config.commandBlockBoxColor,
-                        config.commandBlockSphereMinColor, config.commandBlockSphereMaxColor));
+                drawVolumeLines(poseStack.last(), linesConsumer, volume, camera, config));
 
         if (ClientConfig.get().serverVolumesEnabled)
             iterServerSelectorVolumes(volume ->
-                    drawVolumeLines(poseStack.last(), linesConsumer, volume, camera, config, config.serverBoxColor,
-                            config.serverSphereMinColor, config.serverSphereMaxColor));
-
+                    drawVolumeLines(poseStack.last(), linesConsumer, volume, camera, config));
 
         poseStack.popPose();
     }
@@ -203,7 +191,10 @@ public class SelectorOverlayRenderer {
         });
     }
 
-    private static void drawVolumeLines(PoseStack.Pose pose, VertexConsumer lines, EntitySelectorVolume volume, Camera camera, ClientConfig config, Color boxColor, Color minColor, Color maxColor) {
+    private static void drawVolumeLines(PoseStack.Pose pose, VertexConsumer lines, EntitySelectorVolume volume, Camera camera, ClientConfig config) {
+        Color boxColor = config.getBoxColor(volume);
+        Color minColor = config.getSphereMinColor(volume);
+        Color maxColor = config.getSphereMaxColor(volume);
         float[] c = boxColor.getRGBComponents(null);
         volume.aabb().ifPresent(aabb ->
                 ShapeRenderer.renderLineBox(pose, lines, aabb, c[0], c[1], c[2], c[3])
@@ -228,7 +219,8 @@ public class SelectorOverlayRenderer {
         });
     }
 
-    private static void drawVolumeBackground(PoseStack.Pose pose, VertexConsumer solid, EntitySelectorVolume volume, Camera camera, ClientConfig config, Color color) {
+    private static void drawVolumeBackground(PoseStack.Pose pose, VertexConsumer solid, EntitySelectorVolume volume, Camera camera, ClientConfig config) {
+        Color color = config.getSphereMaxColor(volume);
         float[] c = color.getRGBComponents(null);
         c[3] *= config.sphereBackgroundTransparency;
         var center = volume.center();

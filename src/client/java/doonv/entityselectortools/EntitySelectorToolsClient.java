@@ -1,6 +1,9 @@
 package doonv.entityselectortools;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import de.siphalor.amecs.key_modifiers.api.AmecsKeyMappingWithKeyModifiers;
+import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifierCombination;
+import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifiers;
 import doonv.entityselectortools.compat.AxiomCompat;
 import doonv.entityselectortools.config.ClientConfig;
 import doonv.entityselectortools.create.CreationHudRenderer;
@@ -19,20 +22,31 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.CompletableFuture;
 
-import static doonv.entityselectortools.EntitySelectorTools.LOGGER;
-
 public class EntitySelectorToolsClient implements ClientModInitializer {
     public static final KeyMapping.Category CONTROLS_CATEGORY = KeyMapping.Category.register(
-            Identifier.fromNamespaceAndPath(EntitySelectorTools.MOD_ID, "controls"));
+            EntitySelectorTools.path("controls"));
 
-    public static final KeyMapping COPY_KEY = KeyMappingHelper.registerKeyMapping(
-            new KeyMapping("key.%s.copyCreation".formatted(EntitySelectorTools.MOD_ID), InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_C, EntitySelectorToolsClient.CONTROLS_CATEGORY));
+    public static final KeyMapping COPY_AS_SELECTOR_KEY = KeyMappingHelper.registerKeyMapping(
+            new AmecsKeyMappingWithKeyModifiers(
+                    "key.%s.copyVolumeAsSelector".formatted(EntitySelectorTools.MOD_ID),
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_C, EntitySelectorToolsClient.CONTROLS_CATEGORY,
+                    new AmecsKeyModifierCombination(AmecsKeyModifiers.CONTROL)
+            )
+    );
+
+    public static final KeyMapping COPY_AS_PREDICATE_KEY = KeyMappingHelper.registerKeyMapping(
+            new AmecsKeyMappingWithKeyModifiers(
+                    "key.%s.copyVolumeAsPredicate".formatted(EntitySelectorTools.MOD_ID),
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_X, EntitySelectorToolsClient.CONTROLS_CATEGORY,
+                    new AmecsKeyModifierCombination(AmecsKeyModifiers.CONTROL)
+            )
+    );
 
     private volatile boolean serverHasMod = false;
 

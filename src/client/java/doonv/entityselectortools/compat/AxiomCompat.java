@@ -7,26 +7,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+
 import sun.misc.Unsafe;
+
 import java.util.List;
 
 /// Handles compatibility with Axiom without creating a hard dependency.
 public class AxiomCompat {
     private static final boolean IS_AXIOM_LOADED = FabricLoader.getInstance().isModLoaded("axiom");
 
-    // Reflection cache for Keybind suppression
-    private static boolean copyInitFailed = false;
-
-    private static Object copyIngameKeybindInstance = null;
-
-    private static Field ingameDownLastTimeField = null;
-
-    // Reflection cache for Builder Slot check
     private static boolean builderInitFailed = false;
 
     private static Method isToolSlotActiveMethod = null;
 
-    // Reflection cache for Builder Tool registration
     private static boolean registrationDone = false;
 
     private static boolean toolsFieldPatched = false;
@@ -39,35 +32,9 @@ public class AxiomCompat {
         return IS_AXIOM_LOADED;
     }
 
-    /// Prevents Axiom from overriding our own Copy.
-    /// By setting Axiom's `ingameDownLastTime` to true, Axiom's
-    /// rising-edge check (`down && !wasDown`) will return `false`.
-    public static void suppressAxiomCopy() {
-        if (!IS_AXIOM_LOADED || copyInitFailed) return;
-
-        try {
-            if (copyIngameKeybindInstance == null) {
-                Class<?> keybindsClass = Class.forName("com.moulberry.axiom.editor.keybinds.Keybinds");
-                copyIngameKeybindInstance = keybindsClass.getField("COPY_INGAME").get(null);
-
-                Class<?> keybindClass = Class.forName("com.moulberry.axiom.editor.keybinds.Keybind");
-                ingameDownLastTimeField = keybindClass.getDeclaredField("ingameDownLastTime");
-                ingameDownLastTimeField.setAccessible(true);
-            }
-
-            // Set the state to true to "lock" the keybind from firing
-            if (ingameDownLastTimeField != null && copyIngameKeybindInstance != null) {
-                ingameDownLastTimeField.setBoolean(copyIngameKeybindInstance, true);
-            }
-        } catch (Exception e) {
-            EntitySelectorTools.LOGGER.error("While suppressing Axiom's Ctrl+C copy", e);
-            copyInitFailed = true;
-        }
-    }
-
     /// Checks if Axiom's 10th "Builder Tool" slot is currently active.
     public static boolean isAxiomBuilderSlotActive() {
-        if (!IS_AXIOM_LOADED || builderInitFailed) return false;
+        if (!isAxiomLoaded() || builderInitFailed) return false;
 
         try {
             if (isToolSlotActiveMethod == null) {
@@ -87,7 +54,7 @@ public class AxiomCompat {
     /// Replaces `BuilderToolManager.tools` via `Unsafe.putObject` to work around JDK 12+'s
     /// restriction on `Field.set()` for `static final` fields, and Axiom's immutable list.
     public static void registerBuilderTool() {
-        if (!IS_AXIOM_LOADED || registrationDone) return;
+        if (!isAxiomLoaded() || registrationDone) return;
         registrationDone = true;
 
         try {
@@ -127,7 +94,7 @@ public class AxiomCompat {
 
     /// Checks if Axiom's builder tool slot is active AND our tool is selected.
     public static boolean isSelectorBuilderToolActive() {
-        if (!IS_AXIOM_LOADED || !toolsFieldPatched || ourToolIndex < 0 || !isAxiomBuilderSlotActive()) return false;
+        if (!isAxiomLoaded() || !toolsFieldPatched || ourToolIndex < 0 || !isAxiomBuilderSlotActive()) return false;
 
         try {
             int selected = (int) getToolSlotSelectedMethod.invoke(null);

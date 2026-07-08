@@ -33,6 +33,7 @@ repositories {
     maven("https://maven.terraformersmc.com/") { name = "Terraformers" }
     maven("https://maven.isxander.dev/releases") { name = "Xander Maven" }
     maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
+    maven("https://maven.siphalor.de/") { name = "Siphalor's Maven" }
 }
 
 loom {
@@ -85,6 +86,9 @@ dependencies {
 
     modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
+    modCompileOnly("de.siphalor.amecs.amecs-key-modifiers:amecs-key-modifiers-mc${property("deps.amecs-mc")}:${property("deps.amecs-key-modifiers")}")
+    modImplementation("de.siphalor.amecs.amecs-bundle:amecs-bundle-mc${property("deps.amecs-mc")}:${property("deps.amecs")}")
+
     fapi(
         "fabric-lifecycle-events-v1",
         "fabric-resource-loader-v0",
@@ -108,6 +112,7 @@ tasks {
         inputs.property("fabric", project.property("deps.fabric_loader"))
         inputs.property("minecraft", project.property("deps.minecraft"))
         inputs.property("yacl", project.property("deps.yacl"))
+        inputs.property("amecs_key_modifiers", project.property("deps.amecs-key-modifiers"))
 
         val props = mapOf(
             "id" to project.property("mod.id"),
@@ -115,7 +120,8 @@ tasks {
             "version" to version,
             "fabric" to project.property("deps.fabric_loader"),
             "minecraft" to project.property("deps.minecraft"),
-            "yacl" to project.property("deps.yacl")
+            "yacl" to project.property("deps.yacl"),
+            "amecs_key_modifiers" to project.property("deps.amecs-key-modifiers")
         )
 
         filesMatching("fabric.mod.json") { expand(props) }
@@ -155,10 +161,16 @@ publishMods {
         minecraftVersions.addAll(property("mod.mc_targets").toString().split(' '))
 
         requires {
+            slug = "amecs"
+        }
+        requires {
             slug = "yacl"
         }
         requires {
             slug = "fabric-api"
+        }
+        optional {
+            slug = "axiom"
         }
     }
 
@@ -174,10 +186,16 @@ publishMods {
         client = true
 
         requires {
+            slug = "amecs"
+        }
+        requires {
             slug = "yacl"
         }
         requires {
             slug = "fabric-api"
+        }
+        optional {
+            slug = "axiomtool"
         }
     }
 }

@@ -3,7 +3,10 @@
   "package": "doonv.entityselectortools.mixin",
   "compatibilityLevel": "${java}",
   "mixins": [
-    "EntitySelectorMixin"
+    "EntitySelectorMixin",
+    "EntitySelectorParserMixin",
+    "ExecuteCommandMixin",
+    "accessor.CompositeLootItemConditionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

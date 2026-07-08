@@ -70,17 +70,17 @@ public class SelectorBuilderTool implements InvocationHandler {
     }
 
     private void handleLeftClick(HitResult hit) {
-        if (!creationAllowed()) return;
+        if (!selectionAllowed()) return;
         CreationManager.pos1 = resolvePos();
     }
 
     private void handleRightClick(HitResult hit) {
-        if (!creationAllowed()) return;
+        if (!selectionAllowed()) return;
         CreationManager.pos2 = resolvePos();
     }
 
     private void handleMiddleClick(HitResult hit) {
-        if (!creationAllowed()) return;
+        if (!selectionAllowed()) return;
         CreationManager.expandTo(resolvePos());
     }
 
@@ -92,7 +92,7 @@ public class SelectorBuilderTool implements InvocationHandler {
         return BlockPos.ZERO;
     }
 
-    private boolean creationAllowed() {
+    private boolean selectionAllowed() {
         LocalPlayer player = Minecraft.getInstance().player;
         return player != null && CreationManager.canCreate(player);
     }

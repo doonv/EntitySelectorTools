@@ -5,6 +5,7 @@ import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
 import dev.isxander.yacl3.config.v2.api.SerialEntry;
 import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
 import doonv.entityselectortools.EntitySelectorTools;
+import doonv.entityselectortools.preview.EntitySelectorVolume;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -22,6 +23,7 @@ public class ClientConfig {
                     .build())
             .build();
 
+    //#region Category: Preview
     @SerialEntry(comment = """
             Entity selector volumes used by command blocks.
             These are created client-side by reading the command block's command and looking for entity selectors.
@@ -38,6 +40,13 @@ public class ClientConfig {
 
     @SerialEntry
     public Color commandBlockSphereMaxColor = new Color(0xAE4DE6);
+
+    @SerialEntry(comment = """
+            The color of predicate-based volumes from command blocks.
+            These originate from @e[predicate=...] or execute if predicate.
+            Only location_check conditions with all 3 axes bounds with both min and max bounds defined produce a box.
+            Negated conditions are skipped.""")
+    public Color commandBlockPredicateBoxColor = new Color(0xFF5757);
 
     @SerialEntry(comment = """
             Entity selector volumes used by the server, mostly datapacks.
@@ -59,11 +68,20 @@ public class ClientConfig {
     public Color serverSphereMaxColor = new Color(0x00FF04);
 
     @SerialEntry(comment = """
+            The color of predicate-based volumes from the server (datapacks).
+            These originate from @e[predicate=...] or execute if predicate.
+            Only location_check conditions with all 3 axes bounds with both min and max bounds defined produce a box.
+            Negated conditions are skipped.""")
+    public Color serverPredicateBoxColor = new Color(0x17E8B3);
+
+    @SerialEntry(comment = """
             Server volumes are sent to the client every tick by the server.
             This config changes how long to render server volumes for
             after getting them from the server in milliseconds.
             Increase this value on unstable connections.""")
     public long serverVolumeExpiryTimeMillis = 2 * (1000 / 20);
+
+    // -----
 
     @SerialEntry(comment = "Controls the resolution of the rendered spheres. Higher values make smoother spheres but may impact performance.")
     public int sphereSegments = 48;
@@ -73,9 +91,9 @@ public class ClientConfig {
 
     @SerialEntry(comment = "Reduces sphere detail when the sphere is far away from the camera to improve performance.")
     public boolean adaptiveSphereResolution = true;
+    //#endregion
 
-    // ========== CREATION ==========
-
+    //#region Category: Creation
     @SerialEntry
     public boolean boxCreationWithWand = true;
 
@@ -92,6 +110,21 @@ public class ClientConfig {
 
     @SerialEntry
     public Color selectionColor = new Color(0x804dff);
+    //#endregion
+
+    public Color getBoxColor(EntitySelectorVolume volume) {
+        return volume.fromPredicate()
+                ? (volume.isServer() ? serverPredicateBoxColor : commandBlockPredicateBoxColor)
+                : (volume.isServer() ? serverBoxColor : commandBlockBoxColor);
+    }
+
+    public Color getSphereMinColor(EntitySelectorVolume volume) {
+        return volume.isServer() ? serverSphereMinColor : commandBlockSphereMinColor;
+    }
+
+    public Color getSphereMaxColor(EntitySelectorVolume volume) {
+        return volume.isServer() ? serverSphereMaxColor : commandBlockSphereMaxColor;
+    }
 
     /// A shortcut for `HANDLER.instance()`
     ///

@@ -15,7 +15,7 @@ public record VolumeTemplate(
         Vec3 origin = new Vec3(x.resolve(pos.x), y.resolve(pos.y), z.resolve(pos.z));
         Optional<AABB> aabb = boxDelta.map(d ->
                 new AABB(origin.x, origin.y, origin.z, origin.x + d.x, origin.y + d.y, origin.z + d.z));
-        return new EntitySelectorVolume(origin, aabb, distance);
+        return new EntitySelectorVolume(origin, aabb, distance, false, false);
     }
 
     public record Axis(boolean isRelative, boolean aligned, double value) {

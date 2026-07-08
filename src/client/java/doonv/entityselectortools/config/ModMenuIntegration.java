@@ -49,7 +49,8 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.commandBlockBoxColor,
                 () -> config.commandBlockBoxColor,
                 v -> config.commandBlockBoxColor = v,
-                master.pendingValue()
+                master.pendingValue(),
+                null
         );
 
         Option<Color> sphereMinColor = colorOption(
@@ -57,7 +58,8 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.commandBlockSphereMinColor,
                 () -> config.commandBlockSphereMinColor,
                 v -> config.commandBlockSphereMinColor = v,
-                master.pendingValue()
+                master.pendingValue(),
+                null
         );
 
         Option<Color> sphereMaxColor = colorOption(
@@ -65,7 +67,17 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.commandBlockSphereMaxColor,
                 () -> config.commandBlockSphereMaxColor,
                 v -> config.commandBlockSphereMaxColor = v,
-                master.pendingValue()
+                master.pendingValue(),
+                null
+        );
+
+        Option<Color> predicateColor = colorOption(
+                "yacl3.config.entityselectortools:config.commandBlockPredicateBoxColor",
+                defaults.commandBlockPredicateBoxColor,
+                () -> config.commandBlockPredicateBoxColor,
+                v -> config.commandBlockPredicateBoxColor = v,
+                master.pendingValue(),
+                "yacl3.config.entityselectortools:config.predicateBoxColor.desc"
         );
 
         master.addEventListener((opt, event) -> {
@@ -74,6 +86,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 boxColor.setAvailable(enabled);
                 sphereMinColor.setAvailable(enabled);
                 sphereMaxColor.setAvailable(enabled);
+                predicateColor.setAvailable(enabled);
             }
         });
 
@@ -84,6 +97,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 .option(boxColor)
                 .option(sphereMinColor)
                 .option(sphereMaxColor)
+                .option(predicateColor)
                 .build();
     }
 
@@ -102,7 +116,8 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.serverBoxColor,
                 () -> config.serverBoxColor,
                 v -> config.serverBoxColor = v,
-                master.pendingValue()
+                master.pendingValue(),
+                null
         );
 
         Option<Color> sphereMinColor = colorOption(
@@ -110,7 +125,8 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.serverSphereMinColor,
                 () -> config.serverSphereMinColor,
                 v -> config.serverSphereMinColor = v,
-                master.pendingValue()
+                master.pendingValue(),
+                null
         );
 
         Option<Color> sphereMaxColor = colorOption(
@@ -118,7 +134,17 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.serverSphereMaxColor,
                 () -> config.serverSphereMaxColor,
                 v -> config.serverSphereMaxColor = v,
-                master.pendingValue()
+                master.pendingValue(),
+                null
+        );
+
+        Option<Color> predicateColor = colorOption(
+                "yacl3.config.entityselectortools:config.serverPredicateBoxColor",
+                defaults.serverPredicateBoxColor,
+                () -> config.serverPredicateBoxColor,
+                v -> config.serverPredicateBoxColor = v,
+                master.pendingValue(),
+                "yacl3.config.entityselectortools:config.predicateBoxColor.desc"
         );
 
         Option<Long> expiryTime = Option.<Long>createBuilder()
@@ -136,6 +162,7 @@ public class ModMenuIntegration implements ModMenuApi {
             if (event == OptionEventListener.Event.STATE_CHANGE) {
                 boolean enabled = opt.pendingValue();
                 boxColor.setAvailable(enabled);
+                predicateColor.setAvailable(enabled);
                 sphereMinColor.setAvailable(enabled);
                 sphereMaxColor.setAvailable(enabled);
                 expiryTime.setAvailable(enabled);
@@ -143,11 +170,13 @@ public class ModMenuIntegration implements ModMenuApi {
         });
 
         return OptionGroup.createBuilder()
-                .name(Component.translatable("yacl3.config.entityselectortools:config.category.preview.group.server"))
+                .name(Component.translatable(
+                        "yacl3.config.entityselectortools:config.category.preview.group.server"))
                 .option(master)
                 .option(boxColor)
                 .option(sphereMinColor)
                 .option(sphereMaxColor)
+                .option(predicateColor)
                 .option(expiryTime)
                 .build();
     }
@@ -245,7 +274,8 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.selectionColor,
                 () -> config.selectionColor,
                 v -> config.selectionColor = v,
-                wandMaster.pendingValue() || axiomTool.pendingValue()
+                wandMaster.pendingValue() || axiomTool.pendingValue(),
+                null
         );
 
         wandMaster.addEventListener((opt, event) -> {
@@ -280,14 +310,18 @@ public class ModMenuIntegration implements ModMenuApi {
             Color def,
             Supplier<Color> getter,
             Consumer<Color> setter,
-            boolean available
+            boolean available,
+            String descriptionKey
     ) {
-        return Option.<Color>createBuilder()
+        var builder = Option.<Color>createBuilder()
                 .name(Component.translatable(translationKey))
                 .binding(def, getter, setter)
                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
-                .available(available)
-                .build();
+                .available(available);
+        if (descriptionKey != null) {
+            builder.description(OptionDescription.of(Component.translatable(descriptionKey)));
+        }
+        return builder.build();
     }
 
     @Override

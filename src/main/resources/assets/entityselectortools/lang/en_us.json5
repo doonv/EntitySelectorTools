@@ -1,14 +1,18 @@
 {
     "entityselectortools.no-mod-on-server-warning": "[Entity Selector Tools] Warning: Server is missing mod. Server entity volume visualization disabled.",
     "key.category.entityselectortools.controls": "Entity Selector Tools",
-    "key.entityselectortools.copyCreation": "Copy Creation",
-    "entityselectortools.box-create": {
+    "key.entityselectortools": {
+        "copyVolumeAsSelector": "Copy Volume As Selector",
+        "copyVolumeAsPredicate": "Copy Volume As Predicate"
+    },
+    "entityselectortools.boxCreate": {
         "hud.pos1": "[%1$s] First Point",
         "hud.pos2": "[%1$s] Second Point",
         "hud.extend": "[%1$s] Extend",
-        "hud.copy": "[Ctrl+%1$s] Copy Creation",
-        "copy-success": "Successfully copied to clipboard!",
-        "copy-no-creation": "Create something first.",
+        "hud.copyAsSelector": "[%1$s] Copy Selector",
+        "hud.copyAsPredicate": "[%1$s] Copy Predicate",
+        "copySuccess": "Copied to clipboard!",
+        "copyNoVolume": "Create a volume first."
     },
     "yacl3.config.entityselectortools:config": {
         "category.preview": "Preview",
@@ -21,24 +25,25 @@
             " - ",
             {
                 "text": "execute at",
-                "color": "light_purple"
+                "color": "gold"
             },
             " is not supported.\n",
             " - Anything to do with rotations (",
             {
                 "text": "execute rotated",
-                "color": "light_purple"
+                "color": "gold"
             },
             "/",
             {
                 "text": "facing",
-                "color": "light_purple"
+                "color": "gold"
             },
-            ") is not supported.",
+            ") is not supported."
         ],
         "commandBlockBoxColor": "Box Color",
         "commandBlockSphereMinColor": "Sphere Minimum Distance Color",
         "commandBlockSphereMaxColor": "Sphere Maximum Distance Color",
+        "commandBlockPredicateBoxColor": "Predicate Box Color",
         "category.preview.group.server": "Server Volumes",
         "serverVolumesEnabled": "Enabled",
         "serverVolumesEnabled.desc": [
@@ -50,6 +55,36 @@
         "serverBoxColor": "Box Color",
         "serverSphereMinColor": "Sphere Minimum Distance Color",
         "serverSphereMaxColor": "Sphere Maximum Distance Color",
+        "serverPredicateBoxColor": "Predicate Box Color",
+        "predicateBoxColor.desc": [
+            "The color of predicate-based volumes. These originate from ",
+            {
+                "text": "@e[predicate=...]",
+                "color": "gold"
+            },
+            " or ",
+            {
+                "text": "execute if predicate",
+                "color": "gold"
+            },
+            ".\n",
+            "Only ",
+            {
+                "text": "location_check",
+                "color": "gold"
+            },
+            " conditions with all 3 axes bounds with both ",
+            {
+                "text": "min",
+                "color": "gold"
+            },
+            " and ",
+            {
+                "text": "max",
+                "color": "gold"
+            },
+            " bounds defined produce a box. Negated conditions are skipped."
+        ],
         "serverVolumeExpiryTimeMillis": "Expiry Time",
         "serverVolumeExpiryTimeMillis.desc": "Server volumes are sent to the client every tick by the server. This config changes how long to render server volumes for after getting them from the server in milliseconds.\nIncrease this value on unstable connections.",
         "category.preview.group.sphereRendering": "Sphere Rendering",

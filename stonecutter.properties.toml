@@ -18,6 +18,10 @@ deps.fabric_api = "0.138.4"
 deps.yacl = "3.8.2"
 deps.modmenu = "16.0.1"
 
+deps.amecs-mc = "1.21.9"
+deps.amecs-key-modifiers = "1.0.2"
+deps.amecs = "1.6.3"
+
 deps.minecraft = "1.21.10"
 mod.mc_title = "1.21.10"
 mod.mc_targets = "1.21.10"
@@ -29,6 +33,10 @@ deps.fabric_api = "0.141.3"
 deps.yacl = "3.8.2"
 deps.modmenu = "17.0.0"
 
+deps.amecs-mc = "1.21.9"
+deps.amecs-key-modifiers = "1.0.2"
+deps.amecs = "1.6.3"
+
 deps.minecraft = "1.21.11"
 mod.mc_title = "1.21.11"
 mod.mc_targets = "1.21.11"
@@ -38,6 +46,9 @@ deps.fabric_api = "0.149.1"
 deps.yacl = "3.9.4+26.1"
 deps.modmenu = "18.0.0-alpha.7"
 
+deps.amecs-mc = "26.1.0"
+deps.amecs-key-modifiers = "1.0.2"
+deps.amecs = "1.6.5"
 deps.axiom = "AfA2Emww"
 
 deps.minecraft = "~26.1"
@@ -49,6 +60,9 @@ deps.fabric_api = "0.153.0"
 deps.yacl = "3.9.4+26.2"
 deps.modmenu = "20.0.0-beta.3"
 
+deps.amecs-mc = "26.2.0"
+deps.amecs-key-modifiers = "1.0.2"
+deps.amecs = "1.6.5"
 deps.axiom = "QO99kC52"
 
 deps.minecraft = ">=26.2"
