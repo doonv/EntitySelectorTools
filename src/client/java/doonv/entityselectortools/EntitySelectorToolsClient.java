@@ -4,11 +4,10 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.siphalor.amecs.key_modifiers.api.AmecsKeyMappingWithKeyModifiers;
 import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifierCombination;
 import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifiers;
-import doonv.entityselectortools.compat.AxiomCompat;
 import doonv.entityselectortools.config.ClientConfig;
-import doonv.entityselectortools.create.CreationHudRenderer;
-import doonv.entityselectortools.create.CreationManager;
-import doonv.entityselectortools.create.CreationRenderer;
+import doonv.entityselectortools.creation.CreationHudRenderer;
+import doonv.entityselectortools.creation.CreationManager;
+import doonv.entityselectortools.creation.CreationRenderer;
 import doonv.entityselectortools.network.ServerSelectorPayload;
 import doonv.entityselectortools.preview.CommandBlockManager;
 import doonv.entityselectortools.preview.SelectorOverlayRenderer;
@@ -92,13 +91,9 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
             if (client.isLocalServer() || serverHasMod) return;
 
             if (client.player != null) {
-                systemMessage(client.player, Component.translatable("entityselectortools.no-mod-on-server-warning"));
+                systemMessage(client.player, Component.translatable("entityselectortools.noModOnServerWarning"));
             }
         });
-
-        if (ClientConfig.get().boxCreationWithAxiomTool) {
-            AxiomCompat.registerBuilderTool();
-        }
 
         CreationRenderer.register();
         CreationHudRenderer.register();

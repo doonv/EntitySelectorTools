@@ -1,6 +1,6 @@
 package doonv.entityselectortools.mixin.client;
 
-import doonv.entityselectortools.create.CreationManager;
+import doonv.entityselectortools.creation.CreationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;

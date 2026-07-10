@@ -1,88 +1,115 @@
 package doonv.entityselectortools.compat;
 
-import doonv.entityselectortools.create.CreationHudRenderer;
-import doonv.entityselectortools.create.CreationManager;
+import com.moulberry.axiom.buildertools.BuilderTool;
+//? if >=1.21.11 {
+import com.moulberry.axiom.buildertools.BuilderToolSelectionState;
+//?}
+import com.moulberry.axiom.restrictions.AxiomPermission;
+import com.moulberry.axiom.render.AxiomWorldRenderContext;
+import doonv.entityselectortools.creation.CreationHudRenderer;
+import doonv.entityselectortools.creation.CreationManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.HitResult;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.util.EnumSet;
 import java.util.List;
 
-public class SelectorBuilderTool implements InvocationHandler {
+//? if >=26.1 {
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+//?} else {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+*///?}
 
+public class SelectorBuilderTool implements BuilderTool {
     private static final List<String> EMPTY_HINTS = List.of();
 
-    private static Class<?> cachedPermissionClass;
-
-    private static Object cachedToolPerm;
-
-    private static boolean permissionLookupDone;
-
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) {
-        if (args == null) args = new Object[0];
-
-        return switch (method.getName()) {
-            case "getName" -> "Create Entity Selector Volume";
-            case "leftClick" -> {
-                handleLeftClick(args.length > 0 ? (HitResult) args[0] : null);
-                yield null;
-            }
-            case "rightClick" -> {
-                handleRightClick(args.length > 0 ? (HitResult) args[0] : null);
-                yield null;
-            }
-            case "middleClick" -> {
-                handleMiddleClick(args.length > 0 ? (HitResult) args[0] : null);
-                yield null;
-            }
-            case "renderWorld" -> null;
-            case "renderScreen" -> {
-                renderScreen(args[0], (int) args[1], (int) args[2], (float) args[3]);
-                yield null;
-            }
-            case "scroll" -> false;
-            case "shouldRenderBlockOutline" -> false;
-            case "setPos1" -> {
-                CreationManager.pos1 = (BlockPos) args[0];
-                yield true;
-            }
-            case "setPos2" -> {
-                CreationManager.pos2 = (BlockPos) args[0];
-                yield true;
-            }
-            case "reset" -> {
-                CreationManager.clear();
-                yield null;
-            }
-            case "requiredPermissions" -> createToolPermissionSet();
-            case "canBeReset" -> false;
-            case "getKeyHints" -> EMPTY_HINTS;
-            case "handleInput" -> null;
-            case "getSelectionRestore" -> null;
-            case "applySelectionRestore" -> null;
-            default -> defaultReturn(method);
-        };
+    public String getName() {
+        return "Create Entity Selector Volume";
     }
 
-    private void handleLeftClick(HitResult hit) {
-        if (!selectionAllowed()) return;
+    @Override
+    public void leftClick(HitResult hit) {
         CreationManager.pos1 = resolvePos();
     }
 
-    private void handleRightClick(HitResult hit) {
-        if (!selectionAllowed()) return;
+    @Override
+    public void rightClick(HitResult hit) {
         CreationManager.pos2 = resolvePos();
     }
 
-    private void handleMiddleClick(HitResult hit) {
-        if (!selectionAllowed()) return;
+    @Override
+    public void middleClick(HitResult hit) {
         CreationManager.expandTo(resolvePos());
     }
+
+    @Override
+    public void renderScreen(GuiGraphicsExtractor guiGraphics, int screenWidth, int screenHeight, float partialTick) {
+        CreationHudRenderer.renderHints(guiGraphics);
+    }
+
+    @Override
+    public void renderWorld(AxiomWorldRenderContext rc) {}
+
+    @Override
+    public boolean scroll(int amount) {
+        return false;
+    }
+
+    @Override
+    public boolean shouldRenderBlockOutline(BlockPos pos) {
+        return false;
+    }
+
+    @Override
+    public boolean setPos1(BlockPos position) {
+        CreationManager.pos1 = position;
+        return true;
+    }
+
+    @Override
+    public boolean setPos2(BlockPos position) {
+        CreationManager.pos2 = position;
+        return true;
+    }
+
+    @Override
+    public void reset(boolean fullReset) {
+        CreationManager.clear();
+    }
+
+    @Override
+    public EnumSet<AxiomPermission> requiredPermissions() {
+        return EnumSet.of(AxiomPermission.TOOL);
+    }
+
+    @Override
+    public boolean canBeReset() {
+        return false;
+    }
+
+    @Override
+    public List<String> getKeyHints() {
+        return EMPTY_HINTS; // We render our own hints
+    }
+
+    // handleInput, getSelectionRestore, applySelectionRestore only exist on >=1.21.11
+    //? if >=1.21.11 {
+    @Override
+    public void handleInput(boolean leftPressed, boolean rightPressed, boolean middlePressed) {
+    }
+    @Override
+    public BuilderToolSelectionState.Restore getSelectionRestore() {
+        return null;
+    }
+
+    @Override
+    public void applySelectionRestore(BuilderToolSelectionState.Restore restore) {
+    }
+
+    //? }
 
     private BlockPos resolvePos() {
         LocalPlayer player = Minecraft.getInstance().player;
@@ -90,45 +117,5 @@ public class SelectorBuilderTool implements InvocationHandler {
             return CreationManager.getTargetPos(player);
         }
         return BlockPos.ZERO;
-    }
-
-    private boolean selectionAllowed() {
-        LocalPlayer player = Minecraft.getInstance().player;
-        return player != null && CreationManager.canCreate(player);
-    }
-
-    @SuppressWarnings("unused")
-    private void renderScreen(Object guiGraphicsObj, int screenWidth, int screenHeight, float partialTick) {
-        CreationHudRenderer.renderHints((GuiGraphicsExtractor) guiGraphicsObj);
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private Object createToolPermissionSet() {
-        if (!permissionLookupDone) {
-            permissionLookupDone = true;
-            try {
-                cachedPermissionClass = Class.forName("com.moulberry.axiom.restrictions.AxiomPermission");
-                cachedToolPerm = cachedPermissionClass.getField("TOOL").get(null);
-            } catch (Exception ignored) {
-                cachedToolPerm = null;
-            }
-        }
-        if (cachedToolPerm != null) {
-            return java.util.EnumSet.of((Enum) cachedToolPerm);
-        }
-        if (cachedPermissionClass != null && cachedPermissionClass.isEnum()) {
-            return java.util.EnumSet.noneOf((Class) cachedPermissionClass);
-        }
-        return null;
-    }
-
-    private Object defaultReturn(Method method) {
-        Class<?> ret = method.getReturnType();
-        if (ret == boolean.class) return false;
-        if (ret == int.class) return 0;
-        if (ret == long.class) return 0L;
-        if (ret == float.class) return 0.0f;
-        if (ret == double.class) return 0.0;
-        return null;
     }
 }

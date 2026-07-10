@@ -6,6 +6,7 @@ Tools for viewing and creating entity volume selectors (like `@e[dx=3,dy=5,dz=2]
 
 - Client-side detection of volumes created by command blocks and command block minecarts.
 - Server-side integration for previewing volumes created by datapack functions.
+- Predicate rendering (server-side only)
 - Extensive configuration options (see gallery).
 - Ability to create box volumes with a wand tool of your choice or as an Axiom builder tool.
 

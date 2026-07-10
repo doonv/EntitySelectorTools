@@ -1,4 +1,4 @@
-package doonv.entityselectortools.create;
+package doonv.entityselectortools.creation;
 
 import doonv.entityselectortools.config.ClientConfig;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;

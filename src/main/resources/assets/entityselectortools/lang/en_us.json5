@@ -1,17 +1,18 @@
 {
-    "entityselectortools.no-mod-on-server-warning": "[Entity Selector Tools] Warning: Server is missing mod. Server entity volume visualization disabled.",
+    "entityselectortools.noModOnServerWarning": "[Entity Selector Tools] Server is missing mod. Server volumes and predicate volumes won't be rendered.",
     "key.category.entityselectortools.controls": "Entity Selector Tools",
     "key.entityselectortools": {
         "copyVolumeAsSelector": "Copy Volume As Selector",
         "copyVolumeAsPredicate": "Copy Volume As Predicate"
     },
     "entityselectortools.boxCreate": {
-        "hud.pos1": "[%1$s] First Point",
-        "hud.pos2": "[%1$s] Second Point",
-        "hud.extend": "[%1$s] Extend",
-        "hud.copyAsSelector": "[%1$s] Copy Selector",
-        "hud.copyAsPredicate": "[%1$s] Copy Predicate",
-        "copySuccess": "Copied to clipboard!",
+        "hud.pos1": "First Point",
+        "hud.pos2": "Second Point",
+        "hud.extend": "Extend",
+        "hud.copyAsSelector": "Copy Selector",
+        "hud.copyAsPredicateBounds": "Copy Predicate Bounds",
+        "copySelectorSuccess": "Copied selector to clipboard!",
+        "copyPredicateSuccess": "Copied predicate to clipboard!",
         "copyNoVolume": "Create a volume first."
     },
     "yacl3.config.entityselectortools:config": {
@@ -44,12 +45,21 @@
         "commandBlockSphereMinColor": "Sphere Minimum Distance Color",
         "commandBlockSphereMaxColor": "Sphere Maximum Distance Color",
         "commandBlockPredicateBoxColor": "Predicate Box Color",
+        "commandBlockPredicateBoxColor.desc": [
+            "%s\n\n",
+            {
+                "text": "Note:",
+                "bold": true
+            },
+            " Unlike all the other volumes in this group, predicate volumes require Entity Selector Tools to be installed on the server."
+        ],
         "category.preview.group.server": "Server Volumes",
         "serverVolumesEnabled": "Enabled",
         "serverVolumesEnabled.desc": [
             "Entity selector volumes used by the server, mostly datapacks.\n",
             "These are dynamic and only render when the server just checked that volume. ",
-            "They are always accurate, at the cost of not showing inactive functions, and they also need to be sent by the server every single tick.\n",
+            "They are always accurate, at the cost of not showing inactive functions, ",
+            "and they also need to be sent by the server every single tick.\n",
             "They require the server to also have Entity Selector Tools installed."
         ],
         "serverBoxColor": "Box Color",

@@ -30,7 +30,7 @@ public abstract class EntitySelectorParserMixin implements PredicateKeyHolder {
                     target = "Lnet/minecraft/commands/arguments/selector/options/EntitySelectorOptions$Modifier;handle(Lnet/minecraft/commands/arguments/selector/EntitySelectorParser;)V"
             )
     )
-            //~ if >=26.1 '"string"' -> '"key"'
+            //~ if >=26.1 'ordinal = 0' -> 'name = "key"'
     private void capturePredicateOption(EntitySelectorOptions.Modifier handler, EntitySelectorParser parser, Operation<Void> original, @Local(name = "key") String key) {
         if (!"predicate".equals(key)) {
             original.call(handler, parser);

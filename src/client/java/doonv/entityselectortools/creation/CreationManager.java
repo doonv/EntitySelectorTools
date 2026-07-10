@@ -1,4 +1,4 @@
-package doonv.entityselectortools.create;
+package doonv.entityselectortools.creation;
 
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.EntitySelectorToolsClient;
@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
+import static doonv.entityselectortools.EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY;
 import static doonv.entityselectortools.EntitySelectorToolsClient.overlayMessage;
 
 public class CreationManager {
@@ -27,21 +28,26 @@ public class CreationManager {
     public static @Nullable BlockPos pos2 = null;
 
     public static void register() {
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            if (client.player == null) return;
+        if (AxiomCompat.isAxiomLoaded()) {
+            ClientTickEvents.START_CLIENT_TICK.register(client -> {
+                // todo: check if any of our keybinds match Axiom's, otherwise skip this
+                if (client.player != null && inWandCreationMode(client.player)) {
+                    AxiomCompat.suppressAxiomCopy();
+                }
+            });
+        }
 
-            if (!inWandCreationMode(client.player) && CreationManager.hasVolume()) {
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            if (client.player != null && !inWandCreationMode(client.player) && CreationManager.hasVolume()) {
                 CreationManager.clear();
             }
-        });
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            copyFunctionality(EntitySelectorToolsClient.COPY_AS_SELECTOR_KEY, client, asSelector());
-            copyFunctionality(EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY, client, asPredicate());
+            copyFunctionality(EntitySelectorToolsClient.COPY_AS_SELECTOR_KEY, client, asSelector(), "Selector");
+            copyFunctionality(EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY, client, asPredicate(), "Predicate");
         });
     }
 
-    private static void copyFunctionality(KeyMapping key, Minecraft client, Optional<String> selector) {
+    private static void copyFunctionality(KeyMapping key, Minecraft client, Optional<String> selector, String msg) {
         while (key.consumeClick()) {
             if (client.player == null || !inWandCreationMode(client.player)) continue;
 
@@ -49,9 +55,11 @@ public class CreationManager {
                         client.keyboardHandler.setClipboard(s);
 
                         overlayMessage(client.player, Component.translatable(
-                                "%s.boxCreate.copySuccess".formatted(EntitySelectorTools.MOD_ID)));
-                    }, () -> overlayMessage(client.player, Component.translatable(
-                                    "%s.boxCreate.copyNoCreation".formatted(EntitySelectorTools.MOD_ID))
+                                "%s.boxCreate.copy%sSuccess".formatted(EntitySelectorTools.MOD_ID, msg)
+                        ));
+                    },
+                    () -> overlayMessage(client.player, Component.translatable(
+                                    "%s.boxCreate.copyNoVolume".formatted(EntitySelectorTools.MOD_ID))
                             .withStyle(ChatFormatting.RED))
             );
         }
@@ -117,38 +125,18 @@ public class CreationManager {
 
     public static Optional<String> asPredicate() {
         return volume().map(s -> """
-                "position": {
-                    "x": {
-                        "min": %.0f,
-                        "max": %.0f
-                    },
-                    "y": {
-                        "min": %.0f,
-                        "max": %.0f
-                    },
-                    "z": {
-                        "min": %.0f,
-                        "max": %.0f
-                    }
-                }
-                """.formatted(
-                s.minX, s.maxX,
-                s.minY, s.maxY,
-                s.minZ, s.maxZ));
+                "position": {"x": {"min": %.0f, "max": %.0f}, "y": {"min": %.0f, "max": %.0f}, "z": {"min": %.0f, "max": %.0f}}
+                """.formatted(s.minX, s.maxX, s.minY, s.maxY, s.minZ, s.maxZ));
     }
 
     public static boolean inWandCreationMode(LocalPlayer player) {
         ClientConfig config = ClientConfig.get();
 
-        if (config.boxCreationWithAxiomTool && AxiomCompat.isSelectorBuilderToolActive()) {
+        if (config.boxCreationWithAxiomTool && AxiomCompat.isSelectorBuilderToolActive())
             return true;
-        }
 
-        return config.boxCreationWithWand && canCreate(player) && player.getInventory().getSelectedItem().is(
-                config.wandItem) && !AxiomCompat.isAxiomBuilderSlotActive();
-    }
-
-    public static boolean canCreate(LocalPlayer player) {
-        return player.gameMode() == GameType.CREATIVE;
+        return config.boxCreationWithWand
+                && player.gameMode() == GameType.CREATIVE
+                && player.getInventory().getSelectedItem().is(config.wandItem);
     }
 }

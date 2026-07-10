@@ -19,6 +19,7 @@ import doonv.entityselectortools.compat.AxiomCompat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -77,7 +78,10 @@ public class ModMenuIntegration implements ModMenuApi {
                 () -> config.commandBlockPredicateBoxColor,
                 v -> config.commandBlockPredicateBoxColor = v,
                 master.pendingValue(),
-                "yacl3.config.entityselectortools:config.predicateBoxColor.desc"
+                Component.translatable(
+                        "yacl3.config.entityselectortools:config.commandBlockPredicateBoxColor.desc",
+                        Component.translatable("yacl3.config.entityselectortools:config.predicateBoxColor.desc")
+                )
         );
 
         master.addEventListener((opt, event) -> {
@@ -144,7 +148,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 () -> config.serverPredicateBoxColor,
                 v -> config.serverPredicateBoxColor = v,
                 master.pendingValue(),
-                "yacl3.config.entityselectortools:config.predicateBoxColor.desc"
+                Component.translatable("yacl3.config.entityselectortools:config.predicateBoxColor.desc")
         );
 
         Option<Long> expiryTime = Option.<Long>createBuilder()
@@ -247,9 +251,15 @@ public class ModMenuIntegration implements ModMenuApi {
                 .description(OptionDescription.of(
                         Component.translatable("yacl3.config.entityselectortools:config.boxCreationWithAxiomTool.desc")
                                 .append("\n\nAxiom is currently ")
-                                .append(AxiomCompat.isAxiomLoaded() ? Component.literal("loaded").withStyle(
-                                        ChatFormatting.GREEN) : Component.literal("NOT loaded").withStyle(
-                                        ChatFormatting.RED))
+                                .append(AxiomCompat.isAxiomLoaded()
+                                        ? Component.empty().append(
+                                                Component.literal("loaded").withStyle(ChatFormatting.GREEN))
+                                        .append(" and the builder tool is ")
+                                        .append(AxiomCompat.axiomBuilderToolRegistered
+                                                ? Component.literal("registered").withStyle(ChatFormatting.GREEN)
+                                                : Component.literal("NOT registered").withStyle(ChatFormatting.RED))
+                                        : Component.literal("NOT loaded").withStyle(ChatFormatting.RED)
+                                )
                                 .append(".")
                 ))
                 .binding(defaults.boxCreationWithAxiomTool, () -> config.boxCreationWithAxiomTool,
@@ -279,19 +289,19 @@ public class ModMenuIntegration implements ModMenuApi {
         );
 
         wandMaster.addEventListener((opt, event) -> {
-            if (event == OptionEventListener.Event.STATE_CHANGE) {
-                boolean enabled = opt.pendingValue();
-                wandItem.setAvailable(enabled);
-                airDistance.setAvailable(enabled || axiomTool.pendingValue());
-                selectionColor.setAvailable(enabled || axiomTool.pendingValue());
-            }
+            if (event != OptionEventListener.Event.STATE_CHANGE) return;
+
+            boolean enabled = opt.pendingValue();
+            wandItem.setAvailable(enabled);
+            airDistance.setAvailable(enabled || axiomTool.pendingValue());
+            selectionColor.setAvailable(enabled || axiomTool.pendingValue());
         });
         axiomTool.addEventListener((opt, event) -> {
-            if (event == OptionEventListener.Event.STATE_CHANGE) {
-                boolean enabled = opt.pendingValue();
-                airDistance.setAvailable(enabled || wandMaster.pendingValue());
-                selectionColor.setAvailable(enabled || wandMaster.pendingValue());
-            }
+            if (event != OptionEventListener.Event.STATE_CHANGE) return;
+
+            boolean enabled = opt.pendingValue();
+            airDistance.setAvailable(enabled || wandMaster.pendingValue());
+            selectionColor.setAvailable(enabled || wandMaster.pendingValue());
         });
 
         return OptionGroup.createBuilder()
@@ -311,15 +321,15 @@ public class ModMenuIntegration implements ModMenuApi {
             Supplier<Color> getter,
             Consumer<Color> setter,
             boolean available,
-            String descriptionKey
+            @Nullable Component description
     ) {
         var builder = Option.<Color>createBuilder()
                 .name(Component.translatable(translationKey))
                 .binding(def, getter, setter)
                 .controller(opt -> ColorControllerBuilder.create(opt).allowAlpha(true))
                 .available(available);
-        if (descriptionKey != null) {
-            builder.description(OptionDescription.of(Component.translatable(descriptionKey)));
+        if (description != null) {
+            builder.description(OptionDescription.of(description));
         }
         return builder.build();
     }

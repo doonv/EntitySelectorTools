@@ -42,7 +42,7 @@ loom {
     runConfigs.all {
         ideConfigGenerated(true)
         vmArgs("-Dmixin.debug.export=true") // Exports transformed classes for debugging
-        runDir = "../../run" // Shares the run directory between versions
+        runDir = "run"
     }
 }
 
@@ -71,8 +71,10 @@ dependencies {
 
     implementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
-    runtimeOnly("maven.modrinth:axiom:${property("deps.axiom")}")
     implementation("de.siphalor.amecs.amecs-key-modifiers:amecs-key-modifiers-mc${property("deps.amecs-mc")}:${property("deps.amecs-key-modifiers")}")
+    compileOnly("com.moulberry:lattice:${property("deps.lattice")}") // Used by Axiom's keybinds
+    compileOnly("maven.modrinth:axiom:${property("deps.axiom")}")
+//    runtimeOnly("maven.modrinth:axiom:${property("deps.axiom")}")
 
     fapi(
         "fabric-lifecycle-events-v1",
@@ -117,6 +119,10 @@ tasks {
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
 
         exclude("**/*.kra", "**/*.aseprite")
+    }
+
+    named<ProcessResources>("processClientResources") {
+        exclude("fabric.mod.json")
     }
 
     withType<Jar>().configureEach {

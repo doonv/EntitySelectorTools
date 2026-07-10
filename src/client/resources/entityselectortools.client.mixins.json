@@ -4,7 +4,9 @@
   "plugin": "doonv.entityselectortools.mixin.MixinPlugin",
   "compatibilityLevel": "${java}",
   "client": [
+    "AxiomKeybindAccessor",
     "AxiomToolIconOverrideMixin",
+    "AxiomBuilderToolRegistrationMixin",
     "ClientCommonPacketListenerImplMixin",
     "ClientPacketListenerMixin",
     "ServerboundSetCommandMinecartPacketAccessor",

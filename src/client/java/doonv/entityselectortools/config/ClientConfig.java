@@ -101,7 +101,7 @@ public class ClientConfig {
     public Item wandItem = Items.BREEZE_ROD;
 
     @SerialEntry(comment = "Registers the box creation tool as a builder tool in Axiom's 10th hotbar slot (requires Axiom and a full game restart).")
-    public boolean boxCreationWithAxiomTool = false;
+    public boolean boxCreationWithAxiomTool = true;
 
     @SerialEntry(comment = """
             If a block is within this distance, it will be picked;

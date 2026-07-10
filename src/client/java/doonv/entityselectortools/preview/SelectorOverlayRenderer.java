@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
@@ -66,8 +67,10 @@ public class SelectorOverlayRenderer {
     //? if >=1.21.11 {
     private static void render(LevelRenderContext context) {
         ClientConfig config = ClientConfig.get();
+        if (!(context.gameRenderer() instanceof GameRenderer renderer)) return;
+
         //~ if >=26.2 'getMainCamera()' -> 'mainCamera()'
-        Camera camera = context.gameRenderer().mainCamera();
+        Camera camera = renderer.mainCamera();
 
         if (ClientConfig.get().commandBlockVolumesEnabled) {
             COMMAND_BLOCK_SELECTORS.forEach((_, volumes) -> {

@@ -48,7 +48,7 @@ loom {
     runConfigs.all {
         ideConfigGenerated(true)
         vmArgs("-Dmixin.debug.export=true") // Exports transformed classes for debugging
-        runDir = "../../run" // Shares the run directory between versions
+        runDir = "run"
     }
 }
 
@@ -86,8 +86,22 @@ dependencies {
 
     modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
-    modCompileOnly("de.siphalor.amecs.amecs-key-modifiers:amecs-key-modifiers-mc${property("deps.amecs-mc")}:${property("deps.amecs-key-modifiers")}")
-    modImplementation("de.siphalor.amecs.amecs-bundle:amecs-bundle-mc${property("deps.amecs-mc")}:${property("deps.amecs")}")
+    modImplementation(
+        "de.siphalor.amecs.amecs-key-modifiers:amecs-key-modifiers-mc${property("deps.amecs-mc")}:${
+            property(
+                "deps.amecs-key-modifiers"
+            )
+        }"
+    )
+
+    modCompileOnly("com.moulberry:lattice:${property("deps.lattice")}") // Used by Axiom's keybinds
+    modCompileOnly("maven.modrinth:axiom:${property("deps.axiom")}")
+    // Axiom has a lot of JIJ libraries, when you run a mod from modRuntimeOnly,
+    // they don't load. So the game crashes.
+    // tl;dr just put Axiom in the run/ folders manually
+    // modRuntimeOnly("com.moulberry:mixinconstraints:1.1.0")
+    // modRuntimeOnly("maven.modrinth:axiom:${property("deps.axiom")}")
+
 
     fapi(
         "fabric-lifecycle-events-v1",
@@ -130,6 +144,10 @@ tasks {
         filesMatching("*.mixins.json") { expand("java" to mixinJava) }
 
         exclude("**/*.kra", "**/*.aseprite")
+    }
+
+    named<ProcessResources>("processClientResources") {
+        exclude("fabric.mod.json")
     }
 
     withType<Jar>().configureEach {

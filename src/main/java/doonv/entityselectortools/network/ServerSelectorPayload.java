@@ -47,7 +47,7 @@ public record ServerSelectorPayload(EntitySelectorVolume volume) implements Cust
                 Optional<AABB> aabb = readOptionalAABB(buf);
                 MinMaxBounds.Bounds<Double> distance = new MinMaxBounds.Bounds<>(readOptionalDouble(buf),
                         readOptionalDouble(buf));
-                byte flags = buf.isReadable() ? buf.readByte() : 0; // fallback for backwards compatibility
+                byte flags = buf.isReadable() ? buf.readByte() : IS_SERVER; // fallback for backwards compatibility
                 return new EntitySelectorVolume(
                         center, aabb, distance,
                         (flags & FROM_PREDICATE) != 0,
