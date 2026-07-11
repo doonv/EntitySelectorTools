@@ -1,7 +1,7 @@
 package doonv.entityselectortools.creation;
 
 import doonv.entityselectortools.EntitySelectorTools;
-import doonv.entityselectortools.EntitySelectorToolsClient;
+import doonv.entityselectortools.EntitySelectorToolsKeyMappings;
 import doonv.entityselectortools.compat.AxiomCompat;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
@@ -102,11 +102,11 @@ public class CreationHudRenderer {
             y += 13;
             renderHintLine(guiGraphics, font, x, y,
                     Component.translatable("entityselectortools.boxCreate.hud.copyAsSelector"),
-                    EntitySelectorToolsClient.COPY_AS_SELECTOR_KEY);
+                    EntitySelectorToolsKeyMappings.COPY_AS_SELECTOR_KEY);
             y += 13;
             renderHintLine(guiGraphics, font, x, y,
                     Component.translatable("entityselectortools.boxCreate.hud.copyAsPredicateBounds"),
-                    EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY);
+                    EntitySelectorToolsKeyMappings.COPY_AS_PREDICATE_KEY);
         }
     }
 

@@ -3,7 +3,7 @@
     "key.category.entityselectortools.controls": "Entity Selector Tools",
     "key.entityselectortools": {
         "copyVolumeAsSelector": "Copy Volume As Selector",
-        "copyVolumeAsPredicate": "Copy Volume As Predicate"
+        "copyVolumeAsPredicate": "Copy Volume As Predicate Bounds"
     },
     "entityselectortools.boxCreate": {
         "hud.pos1": "First Point",
@@ -15,9 +15,19 @@
         "copyPredicateSuccess": "Copied predicate to clipboard!",
         "copyNoVolume": "Create a volume first."
     },
+    "entityselectortools.missingDeps": {
+        "title": "Entity Selector Tools",
+        "description": "The following client-side dependencies aren't installed:",
+        "descriptionSingular": "The following client-side dependency isn't installed:",
+        "hint": "Click the buttons to open their download pages.",
+        "hintSingular": "Click the button to open its download page.",
+        "quit": "Quit Game"
+    },
     "yacl3.config.entityselectortools:config": {
         "category.preview": "Preview",
         "category.preview.group.commandBlock": "Command Block Volumes",
+        "showModMissing": "Show Mod Missing Message",
+        "showModMissing.desc": "Whether to log a message to chat when Entity Selector Tools is missing on the server.",
         "commandBlockVolumesEnabled": "Enabled",
         "commandBlockVolumesEnabled.desc": [
             "Entity selector volumes used by command blocks.\n",
@@ -104,6 +114,7 @@
         "sphereSegments.desc": "Controls the resolution of the rendered spheres. Higher values make smoother spheres but may impact performance.",
         "sphereBackgroundTransparency": "Sphere Background Transparency",
         "sphereBackgroundTransparency.desc": "Controls the opacity of the backgrounds of rendered spheres.",
+        ////////////////
         "category.creation": "Creation",
         "category.creation.group.boxCreation": "Box Creation",
         "boxCreationWithWand": "Box Creation with Wand",

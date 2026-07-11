@@ -15,7 +15,7 @@ import java.awt.*;
 
 public class ClientConfig {
     public static ConfigClassHandler<ClientConfig> HANDLER = ConfigClassHandler.createBuilder(ClientConfig.class)
-            .id(Identifier.fromNamespaceAndPath(EntitySelectorTools.MOD_ID, "config"))
+            .id(EntitySelectorTools.path("config"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(FabricLoader.getInstance().getConfigDir().resolve(EntitySelectorTools.MOD_ID + ".json5"))
                     .appendGsonBuilder(GsonBuilder::setPrettyPrinting)
@@ -91,6 +91,12 @@ public class ClientConfig {
 
     @SerialEntry(comment = "Reduces sphere detail when the sphere is far away from the camera to improve performance.")
     public boolean adaptiveSphereResolution = true;
+
+    // -----
+
+    @SerialEntry(comment = "Whether to log a message to chat when Entity Selector Tools is missing on the server.")
+    public boolean showModMissing = true;
+
     //#endregion
 
     //#region Category: Creation

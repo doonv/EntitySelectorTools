@@ -1,7 +1,7 @@
 package doonv.entityselectortools.creation;
 
 import doonv.entityselectortools.EntitySelectorTools;
-import doonv.entityselectortools.EntitySelectorToolsClient;
+import doonv.entityselectortools.EntitySelectorToolsKeyMappings;
 import doonv.entityselectortools.compat.AxiomCompat;
 import doonv.entityselectortools.config.ClientConfig;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -19,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-import static doonv.entityselectortools.EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY;
 import static doonv.entityselectortools.EntitySelectorToolsClient.overlayMessage;
 
 public class CreationManager {
@@ -42,8 +41,8 @@ public class CreationManager {
                 CreationManager.clear();
             }
 
-            copyFunctionality(EntitySelectorToolsClient.COPY_AS_SELECTOR_KEY, client, asSelector(), "Selector");
-            copyFunctionality(EntitySelectorToolsClient.COPY_AS_PREDICATE_KEY, client, asPredicate(), "Predicate");
+            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_SELECTOR_KEY, client, asSelector(), "Selector");
+            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_PREDICATE_KEY, client, asPredicate(), "Predicate");
         });
     }
 

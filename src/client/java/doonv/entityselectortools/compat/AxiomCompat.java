@@ -7,16 +7,11 @@ import net.fabricmc.loader.api.FabricLoader;
 
 public class AxiomCompat {
     private static final boolean IS_AXIOM_LOADED = FabricLoader.getInstance().isModLoaded("axiom");
+
     public static boolean axiomBuilderToolRegistered = false;
 
     public static boolean isAxiomLoaded() {
         return IS_AXIOM_LOADED;
-    }
-
-    /// Checks if Axiom's builder tool slot is currently active.
-    public static boolean isAxiomBuilderSlotActive() {
-        if (!isAxiomLoaded()) return false;
-        return BuilderToolManager.isToolSlotActive();
     }
 
     public static boolean isSelectorBuilderToolActive() {

@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html), well... as well as a Minecraft mod can adhere to semantic versioning, it's not a library.
 
 ## [Unreleased]
 
@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Predicate rendering!
   - Supports both `execute if predicate` and `@e[predicate=...]`
-- New "Copy Volume As Predicate" keybinding that copies the selected volume as a predicate `location_check` bounding box, for example:
+- New "Copy Volume As Predicate Bounds" keybinding that copies the selected volume as a predicate `location_check` bounding box, for example:
   ```json
   "position": {
     "x": {
@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     }
   }
   ```
+- Added a new "Show Mod Missing Message" config option that disables the message that you get upon joining a server without Entity Selector Tools installed.
+- Added a screen that shows up when client-side dependencies are missing.
+  - This is a workaround for Fabric not having side-specific dependencies, but hey, it looks nice.
 
 ### Changed
 
@@ -39,6 +42,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - *Box Creation as Axiom Tool* is now enabled by default.
 - Rewrite of compatibility with Axiom 
 - Several miscellaneous code improvements and renames.
+
+### Fixed
+
+- YACL being required on the server when it didn't need to be.
 
 ## [1.0.0]
 

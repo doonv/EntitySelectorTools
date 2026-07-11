@@ -27,8 +27,18 @@ import java.util.function.Supplier;
 
 public class ModMenuIntegration implements ModMenuApi {
     private static ConfigCategory buildPreviewCategory(ClientConfig defaults, ClientConfig config) {
+        Option<Boolean> showModMissing = Option.<Boolean>createBuilder()
+                .name(Component.translatable("yacl3.config.entityselectortools:config.showModMissing"))
+                .description(OptionDescription.of(Component.translatable(
+                        "yacl3.config.entityselectortools:config.showModMissing.desc")))
+                .binding(defaults.showModMissing, () -> config.showModMissing,
+                        v -> config.showModMissing = v)
+                .controller(TickBoxControllerBuilder::create)
+                .build();
+
         return ConfigCategory.createBuilder()
                 .name(Component.translatable("yacl3.config.entityselectortools:config.category.preview"))
+                .option(showModMissing)
                 .group(buildCommandBlockGroup(defaults, config))
                 .group(buildServerGroup(defaults, config))
                 .group(buildSphereRenderingGroup(defaults, config))

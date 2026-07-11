@@ -36,7 +36,9 @@
   "depends": {
     "fabricloader": ">=${fabric}",
     "minecraft": "${minecraft}",
-    "fabric-api": "*",
+    "fabric-api": "*"
+  },
+  "recommends": {
     "yet_another_config_lib_v3": "~${yacl}",
     "amecs_key_modifiers": "~${amecs_key_modifiers}"
   }

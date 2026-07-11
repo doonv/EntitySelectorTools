@@ -1,9 +1,5 @@
 package doonv.entityselectortools;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import de.siphalor.amecs.key_modifiers.api.AmecsKeyMappingWithKeyModifiers;
-import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifierCombination;
-import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifiers;
 import doonv.entityselectortools.config.ClientConfig;
 import doonv.entityselectortools.creation.CreationHudRenderer;
 import doonv.entityselectortools.creation.CreationManager;
@@ -13,39 +9,21 @@ import doonv.entityselectortools.preview.CommandBlockManager;
 import doonv.entityselectortools.preview.SelectorOverlayRenderer;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.CompletableFuture;
 
 public class EntitySelectorToolsClient implements ClientModInitializer {
     public static final KeyMapping.Category CONTROLS_CATEGORY = KeyMapping.Category.register(
             EntitySelectorTools.path("controls"));
-
-    public static final KeyMapping COPY_AS_SELECTOR_KEY = KeyMappingHelper.registerKeyMapping(
-            new AmecsKeyMappingWithKeyModifiers(
-                    "key.%s.copyVolumeAsSelector".formatted(EntitySelectorTools.MOD_ID),
-                    InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_C, EntitySelectorToolsClient.CONTROLS_CATEGORY,
-                    new AmecsKeyModifierCombination(AmecsKeyModifiers.CONTROL)
-            )
-    );
-
-    public static final KeyMapping COPY_AS_PREDICATE_KEY = KeyMappingHelper.registerKeyMapping(
-            new AmecsKeyMappingWithKeyModifiers(
-                    "key.%s.copyVolumeAsPredicate".formatted(EntitySelectorTools.MOD_ID),
-                    InputConstants.Type.KEYSYM,
-                    GLFW.GLFW_KEY_X, EntitySelectorToolsClient.CONTROLS_CATEGORY,
-                    new AmecsKeyModifierCombination(AmecsKeyModifiers.CONTROL)
-            )
-    );
 
     private volatile boolean serverHasMod = false;
 
@@ -65,6 +43,15 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        if (!MissingDepsScreen.YACL_LOADED || !MissingDepsScreen.AMECS_LOADED) {
+            ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+                if (screen instanceof TitleScreen)
+                    client.setScreenAndShow(
+                            new MissingDepsScreen(Component.translatable("entityselectortools.missingDeps.title")));
+            });
+            return; // Cancel rest of mod load to prevent crash
+        }
+        EntitySelectorToolsKeyMappings.register();
         ClientConfig.HANDLER.load();
 
         SelectorOverlayRenderer.register();
@@ -88,7 +75,7 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            if (client.isLocalServer() || serverHasMod) return;
+            if (!ClientConfig.get().showModMissing || client.isLocalServer() || serverHasMod) return;
 
             if (client.player != null) {
                 systemMessage(client.player, Component.translatable("entityselectortools.noModOnServerWarning"));

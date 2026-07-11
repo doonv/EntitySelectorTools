@@ -20,7 +20,7 @@ import java.util.List;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 //?} else {
 /*import net.minecraft.client.gui.GuiGraphicsExtractor;
-*///?}
+ *///?}
 
 public class SelectorBuilderTool implements BuilderTool {
     private static final List<String> EMPTY_HINTS = List.of();
@@ -100,6 +100,7 @@ public class SelectorBuilderTool implements BuilderTool {
     @Override
     public void handleInput(boolean leftPressed, boolean rightPressed, boolean middlePressed) {
     }
+
     @Override
     public BuilderToolSelectionState.Restore getSelectionRestore() {
         return null;
