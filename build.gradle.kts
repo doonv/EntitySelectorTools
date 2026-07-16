@@ -1,5 +1,5 @@
 plugins {
-    id("net.fabricmc.fabric-loom-remap")
+    id("dev.kikugie.loom-back-compat")
 
     // `maven-publish`
     id("me.modmuss50.mod-publish-plugin")
@@ -11,6 +11,7 @@ version = "${property("mod.version")}+${property("mod.mc_title")}"
 base.archivesName = property("mod.id") as String
 
 val requiredJava = when {
+    sc.current.parsed >= "26.1" -> JavaVersion.VERSION_25
     sc.current.parsed >= "1.20.5" -> JavaVersion.VERSION_21
     sc.current.parsed >= "1.18" -> JavaVersion.VERSION_17
     sc.current.parsed >= "1.17" -> JavaVersion.VERSION_16
@@ -39,16 +40,25 @@ repositories {
 loom {
     splitEnvironmentSourceSets()
 
-    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json") // Useful for interface injection
+    fabricModJsonPath = rootProject.file("src/main/resources/fabric.mod.json")
 
     decompilerOptions.named("vineflower") {
-        options.put("mark-corresponding-synthetics", "1") // Adds names to lambdas - useful for mixins
+        options.put("mark-corresponding-synthetics", "1")
     }
 
-    runConfigs.all {
-        ideConfigGenerated(true)
-        vmArgs("-Dmixin.debug.export=true") // Exports transformed classes for debugging
-        runDir = "run"
+    runs {
+        named("client") {
+            client()
+            generateRunConfig.set(true)
+            jvmArguments.add("-Dmixin.debug.export=true")
+            runDirectory.set(file("run"))
+        }
+        named("server") {
+            server()
+            generateRunConfig.set(true)
+            jvmArguments.add("-Dmixin.debug.export=true")
+            runDirectory.set(file("run"))
+        }
     }
 }
 
@@ -61,10 +71,6 @@ fletchingTable {
 }
 
 dependencies {
-    /**
-     * Fetches only the required Fabric API modules to not waste time downloading all of them for each version.
-     * @see <a href="https://github.com/FabricMC/fabric">List of Fabric API modules</a>
-     */
     fun fapi(vararg modules: String) {
         for (it in modules) modImplementation(
             fabricApi.module(
@@ -75,14 +81,19 @@ dependencies {
     }
 
     minecraft("com.mojang:minecraft:${sc.current.version}")
-    mappings(loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${sc.current.version}:${property("parchment")}@zip")
-    })
+
+    if (sc.current.parsed < "26.1") {
+        @Suppress("UnstableApiUsage")
+        mappings(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${sc.current.version}:${property("parchment")}@zip")
+        })
+    }
+
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     implementation("io.github.llamalad7:mixinextras-fabric:${property("deps.mixinextras")}")
 
-    modImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}+${sc.current.version}-fabric")
+    modImplementation("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-fabric")
 
     modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
@@ -94,21 +105,12 @@ dependencies {
         }"
     )
 
-    modCompileOnly("com.moulberry:lattice:${property("deps.lattice")}") // Used by Axiom's keybinds
+    modCompileOnly("com.moulberry:lattice:${property("deps.lattice")}")
     modCompileOnly("maven.modrinth:axiom:${property("deps.axiom")}")
-    // Axiom has a lot of JIJ libraries, when you run a mod from modRuntimeOnly,
-    // they don't load. So the game crashes.
-    // tl;dr just put Axiom in the run/ folders manually
-    // modRuntimeOnly("com.moulberry:mixinconstraints:1.1.0")
-    // modRuntimeOnly("maven.modrinth:axiom:${property("deps.axiom")}")
-
 
     fapi(
         "fabric-lifecycle-events-v1",
-        "fabric-resource-loader-v0",
-        "fabric-content-registries-v0",
-        "fabric-networking-api-v1",
-        "fabric-command-api-v2"
+        "fabric-networking-api-v1"
     )
 }
 
@@ -157,19 +159,17 @@ tasks {
         }
     }
 
-
-    // Builds the version into a shared folder in `build/libs/${mod version}/`
     register<Copy>("buildAndCollect") {
         group = "build"
-        from(remapJar.map { it.archiveFile }, remapSourcesJar.map { it.archiveFile })
+        from(loomx.modJar.map { it.archiveFile }, loomx.modSourcesJar.map { it.archiveFile })
         into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
         dependsOn("build")
     }
 }
 
 publishMods {
-    file = tasks.remapJar.map { it.archiveFile.get() }
-    additionalFiles.from(tasks.remapSourcesJar.map { it.archiveFile.get() })
+    file = loomx.modJar.map { it.archiveFile.get() }
+    additionalFiles.from(loomx.modSourcesJar.map { it.archiveFile.get() })
     displayName = "${property("mod.version")} for Minecraft ${property("mod.mc_title")}"
     version = project.version.toString()
     modLoaders.add("fabric")
@@ -178,18 +178,10 @@ publishMods {
         projectId = property("publish.modrinth") as String
         minecraftVersions.addAll(property("mod.mc_targets").toString().split(' '))
 
-        requires {
-            slug = "amecs"
-        }
-        requires {
-            slug = "yacl"
-        }
-        requires {
-            slug = "fabric-api"
-        }
-        optional {
-            slug = "axiom"
-        }
+        requires { slug = "amecs" }
+        requires { slug = "yacl" }
+        requires { slug = "fabric-api" }
+        optional { slug = "axiom" }
     }
 
     github {
@@ -203,44 +195,9 @@ publishMods {
         server = true
         client = true
 
-        requires {
-            slug = "amecs"
-        }
-        requires {
-            slug = "yacl"
-        }
-        requires {
-            slug = "fabric-api"
-        }
-        optional {
-            slug = "axiomtool"
-        }
+        requires { slug = "amecs" }
+        requires { slug = "yacl" }
+        requires { slug = "fabric-api" }
+        optional { slug = "axiomtool" }
     }
 }
-
-/*
-// Publishes builds to a maven repository under `com.example:template:0.1.0+mc`
-publishing {
-    repositories {
-        maven("https://maven.example.com/releases") {
-            name = "myMaven"
-            // To authenticate, create `myMavenUsername` and `myMavenPassword` properties in your Gradle home properties.
-            // See https://stonecutter.kikugie.dev/wiki/tips/properties#defining-properties
-            credentials(PasswordCredentials::class.java)
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
-    }
-
-    publications {
-        create<MavenPublication>("mavenJava") {
-            groupId = "${property("mod.group")}.${property("mod.id")}"
-            artifactId = property("mod.id") as String
-            version = project.version
-
-            from(components["java"])
-        }
-    }
-}
- */

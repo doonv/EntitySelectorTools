@@ -1,7 +1,5 @@
 plugins {
     id("dev.kikugie.stonecutter")
-    id("net.fabricmc.fabric-loom-remap") version "1.17-SNAPSHOT" apply false
-    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT" apply false
     id("me.modmuss50.mod-publish-plugin") version "2.0.+"
 }
 
@@ -13,7 +11,7 @@ stonecutter tasks {
     order("publishCurseforge")
 }
 
-// See https://stonecut/ter.kikugie.dev/wiki/config/params
+// See https://stonecutter.kikugie.dev/wiki/config/params
 stonecutter parameters {
     swaps["mod_id"] = "\"${property("mod.id")}\";"
     swaps["mod_version"] = "\"${property("mod.version")}\";"
@@ -38,7 +36,10 @@ stonecutter parameters {
                 "net.fabricmc.fabric.api.client.rendering.v1.world",
                 "net.fabricmc.fabric.api.client.rendering.v1.level"
             )
-            replace("AxiomWorldRenderContext", "AxiomWorldRenderContext") // Avoid conflict with "WorldRender", "LevelRender"
+            replace(
+                "AxiomWorldRenderContext",
+                "AxiomWorldRenderContext"
+            ) // Avoid conflict with "WorldRender", "LevelRender"
             replace("WorldRender", "LevelRender")
             replace("BEFORE_DEBUG_RENDER", "BEFORE_GIZMOS")
             replace("net.fabricmc.fabric.api.client.keybinding.v1", "net.fabricmc.fabric.api.client.keymapping.v1")
