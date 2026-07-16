@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the color of inline code in the config screen to gold from light purple.
 - If Axiom is loaded, its mouse icons are used instead of the name of the keybind.
 - *Box Creation as Axiom Tool* is now enabled by default.
-- Rewrite of compatibility with Axiom 
+- Rewrote Axiom integration. 
 - Several miscellaneous code improvements and renames.
 
 ### Fixed

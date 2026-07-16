@@ -1,11 +1,10 @@
 package doonv.entityselectortools.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import doonv.entityselectortools.network.ServerSelectorPayload;
+import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.predicate.ConditionTreeWalker;
 import doonv.entityselectortools.predicate.PredicateKeyHolder;
 import doonv.entityselectortools.preview.EntitySelectorVolume;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
@@ -23,11 +22,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Mixin(EntitySelector.class)
 public abstract class EntitySelectorMixin implements PredicateKeyHolder {
+    private static final MinMaxBounds.Bounds<Double> ANY = MinMaxBounds.Doubles.ANY.bounds();
+
     @Shadow
     @Final
     @Nullable
@@ -49,29 +51,30 @@ public abstract class EntitySelectorMixin implements PredicateKeyHolder {
             //~ if >=26.1 '"aABB"' -> '"absoluteAabb"'
             @Local(name = "absoluteAabb") @Nullable AABB absoluteAabb
     ) {
-        int viewDistanceChunks = sender.getServer().getPlayerList().getViewDistance();
-        double range = viewDistanceChunks * 16.0;
+        double range = EntitySelectorTools.getMaxSelectorRange();
         if (this.predicateKey != null) {
             var lookup = sender.getServer().reloadableRegistries().lookup();
             lookup.get(this.predicateKey).ifPresent(holder -> {
                 var condition = holder.value();
                 List<AABB> boxes = ConditionTreeWalker.walk(condition);
+                if (boxes.isEmpty()) return;
+
+                List<EntitySelectorVolume> allVolumes = new ArrayList<>(boxes.size());
                 for (AABB predicateBox : boxes) {
-                    Vec3 predicateCenter = predicateBox.getCenter();
-                    ServerSelectorPayload predicatePayload = new ServerSelectorPayload(
-                            new EntitySelectorVolume(
-                                    predicateCenter,
-                                    Optional.of(predicateBox),
-                                    MinMaxBounds.Doubles.ANY.bounds(),
-                                    true,
-                                    sender.isSilent()
-                            )
-                    );
-                    for (ServerPlayer player : sender.getLevel().players()) {
-                        if (player.distanceToSqr(predicateCenter) > (range * range)) continue;
-                        if (ServerPlayNetworking.canSend(player, ServerSelectorPayload.TYPE)) {
-                            ServerPlayNetworking.send(player, predicatePayload);
-                        }
+                    allVolumes.add(new EntitySelectorVolume(
+                            predicateBox.getCenter(),
+                            Optional.of(predicateBox),
+                            ANY,
+                            true,
+                            sender.isSilent()
+                    ));
+                }
+
+                for (ServerPlayer player : sender.getLevel().players()) {
+                    if (!EntitySelectorTools.isModCapable(player)) continue;
+                    for (EntitySelectorVolume vol : allVolumes) {
+                        if (player.distanceToSqr(vol.center()) > (range * range)) continue;
+                        EntitySelectorTools.addToBatch(player.getUUID(), vol);
                     }
                 }
             });
@@ -89,20 +92,17 @@ public abstract class EntitySelectorMixin implements PredicateKeyHolder {
         }
 
         Vec3 center = box.map(AABB::getCenter).orElse(sender.getPosition());
-        ServerSelectorPayload payload = new ServerSelectorPayload(
-                new EntitySelectorVolume(
-                        center,
-                        box,
-                        Optional.ofNullable(this.range).map(MinMaxBounds.Doubles::bounds)
-                                .orElse(MinMaxBounds.Doubles.ANY.bounds())
-                )
+        EntitySelectorVolume volume = new EntitySelectorVolume(
+                center,
+                box,
+                Optional.ofNullable(this.range).map(MinMaxBounds.Doubles::bounds)
+                        .orElse(ANY)
         );
 
         for (ServerPlayer player : sender.getLevel().players()) {
             if (player.distanceToSqr(center) > (range * range)) continue;
-
-            if (ServerPlayNetworking.canSend(player, ServerSelectorPayload.TYPE)) {
-                ServerPlayNetworking.send(player, payload);
+            if (EntitySelectorTools.isModCapable(player)) {
+                EntitySelectorTools.addToBatch(player.getUUID(), volume);
             }
         }
     }

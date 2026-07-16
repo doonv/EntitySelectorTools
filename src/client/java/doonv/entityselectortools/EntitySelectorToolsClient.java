@@ -4,8 +4,11 @@ import doonv.entityselectortools.config.ClientConfig;
 import doonv.entityselectortools.creation.CreationHudRenderer;
 import doonv.entityselectortools.creation.CreationManager;
 import doonv.entityselectortools.creation.CreationRenderer;
+import doonv.entityselectortools.network.ClientVersionPayload;
+import doonv.entityselectortools.network.LegacyDatapackSelectorPayload;
 import doonv.entityselectortools.network.ServerSelectorPayload;
 import doonv.entityselectortools.preview.CommandBlockManager;
+import doonv.entityselectortools.preview.EntitySelectorVolume;
 import doonv.entityselectortools.preview.SelectorOverlayRenderer;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
@@ -13,6 +16,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -59,7 +63,17 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
 
         ClientPlayNetworking.registerGlobalReceiver(ServerSelectorPayload.TYPE,
                 (payload, context) ->
-                        context.client().execute(() -> SelectorOverlayRenderer.addServerSelector(payload.volume()))
+                        context.client().execute(() -> {
+                            for (EntitySelectorVolume vol : payload.volumes()) {
+                                SelectorOverlayRenderer.addServerSelector(vol);
+                            }
+                        })
+        );
+        ClientPlayNetworking.registerGlobalReceiver(LegacyDatapackSelectorPayload.TYPE,
+                (payload, context) ->
+                        context.client().execute(() -> {
+                            SelectorOverlayRenderer.addServerSelector(payload.volume());
+                        })
         );
 
         ClientLoginNetworking.registerGlobalReceiver(EntitySelectorTools.HANDSHAKE_CHANNEL,
@@ -75,6 +89,12 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
         });
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            if (serverHasMod) {
+                FabricLoader.getInstance().getModContainer(EntitySelectorTools.MOD_ID)
+                        .map(c -> c.getMetadata().getVersion().getFriendlyString()).ifPresent(
+                                version -> ClientPlayNetworking.send(new ClientVersionPayload(version)));
+            }
+
             if (!ClientConfig.get().showModMissing || client.isLocalServer() || serverHasMod) return;
 
             if (client.player != null) {

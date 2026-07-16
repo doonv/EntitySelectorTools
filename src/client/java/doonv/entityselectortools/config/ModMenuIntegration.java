@@ -286,7 +286,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 .controller(opt -> DoubleSliderControllerBuilder.create(opt)
                         .range(0.0, 256.0).step(1.0)
                         .formatValue(v -> Component.literal(String.format("%.0f blocks", v))))
-                .available(wandMaster.pendingValue() || axiomTool.pendingValue())
+                .available(wandMaster.pendingValue() || (AxiomCompat.isAxiomLoaded() && axiomTool.pendingValue()))
                 .build();
 
         Option<Color> selectionColor = colorOption(
@@ -294,7 +294,7 @@ public class ModMenuIntegration implements ModMenuApi {
                 defaults.selectionColor,
                 () -> config.selectionColor,
                 v -> config.selectionColor = v,
-                wandMaster.pendingValue() || axiomTool.pendingValue(),
+                wandMaster.pendingValue() || (AxiomCompat.isAxiomLoaded() && axiomTool.pendingValue()),
                 null
         );
 
@@ -303,15 +303,15 @@ public class ModMenuIntegration implements ModMenuApi {
 
             boolean enabled = opt.pendingValue();
             wandItem.setAvailable(enabled);
-            airDistance.setAvailable(enabled || axiomTool.pendingValue());
-            selectionColor.setAvailable(enabled || axiomTool.pendingValue());
+            airDistance.setAvailable(enabled || (AxiomCompat.isAxiomLoaded() && axiomTool.pendingValue()));
+            selectionColor.setAvailable(enabled || (AxiomCompat.isAxiomLoaded() && axiomTool.pendingValue()));
         });
         axiomTool.addEventListener((opt, event) -> {
             if (event != OptionEventListener.Event.STATE_CHANGE) return;
 
             boolean enabled = opt.pendingValue();
-            airDistance.setAvailable(enabled || wandMaster.pendingValue());
-            selectionColor.setAvailable(enabled || wandMaster.pendingValue());
+            airDistance.setAvailable(enabled || (AxiomCompat.isAxiomLoaded() && wandMaster.pendingValue()));
+            selectionColor.setAvailable(enabled || (AxiomCompat.isAxiomLoaded() && wandMaster.pendingValue()));
         });
 
         return OptionGroup.createBuilder()

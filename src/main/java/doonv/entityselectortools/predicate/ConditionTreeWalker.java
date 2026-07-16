@@ -44,8 +44,6 @@ public class ConditionTreeWalker {
     private static void walk(LootItemCondition condition, List<AABB> boxes) {
         if (condition instanceof LocationCheck loc) {
             extract(loc, boxes);
-        } else if (condition instanceof InvertedLootItemCondition) {
-            // Skip negated conditions in V1
         } else if (condition instanceof CompositeLootItemCondition comp) {
             for (LootItemCondition term : ((CompositeLootItemConditionAccessor) comp).getTerms()) {
                 walk(term, boxes);

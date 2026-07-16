@@ -18,6 +18,7 @@ import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static doonv.entityselectortools.EntitySelectorToolsClient.overlayMessage;
 
@@ -41,16 +42,16 @@ public class CreationManager {
                 CreationManager.clear();
             }
 
-            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_SELECTOR_KEY, client, asSelector(), "Selector");
-            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_PREDICATE_KEY, client, asPredicate(), "Predicate");
+            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_SELECTOR_KEY, client, CreationManager::asSelector, "Selector");
+            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_PREDICATE_KEY, client, CreationManager::asPredicate, "Predicate");
         });
     }
 
-    private static void copyFunctionality(KeyMapping key, Minecraft client, Optional<String> selector, String msg) {
+    private static void copyFunctionality(KeyMapping key, Minecraft client, Supplier<Optional<String>> selector, String msg) {
         while (key.consumeClick()) {
             if (client.player == null || !inWandCreationMode(client.player)) continue;
 
-            selector.ifPresentOrElse(s -> {
+            selector.get().ifPresentOrElse(s -> {
                         client.keyboardHandler.setClipboard(s);
 
                         overlayMessage(client.player, Component.translatable(
