@@ -31,7 +31,7 @@ public abstract class EntitySelectorParserMixin implements PredicateKeyHolder {
             )
     )
             //~ if >=26.1 'ordinal = 0' -> 'name = "key"'
-    private void capturePredicateOption(EntitySelectorOptions.Modifier handler, EntitySelectorParser parser, Operation<Void> original, @Local(name = "key") String key) {
+    private void capturePredicateOption(EntitySelectorOptions.Modifier handler, EntitySelectorParser parser, Operation<Void> original, @Local(ordinal = 0) String key) {
         if (!"predicate".equals(key)) {
             original.call(handler, parser);
             return;

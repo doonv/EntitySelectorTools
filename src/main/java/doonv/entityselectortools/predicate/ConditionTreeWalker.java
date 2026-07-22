@@ -2,7 +2,7 @@ package doonv.entityselectortools.predicate;
 
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.mixin.accessor.CompositeLootItemConditionAccessor;
-import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.loot.predicates.CompositeLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;

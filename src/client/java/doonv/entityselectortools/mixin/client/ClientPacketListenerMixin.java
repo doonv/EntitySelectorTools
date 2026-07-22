@@ -7,7 +7,7 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundTagQueryPacket;
-import net.minecraft.world.level.block.entity.BlockEntityTypes;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -28,7 +28,7 @@ public class ClientPacketListenerMixin {
 
     @Inject(method = "handleBlockEntityData", at = @At("RETURN"))
     private void onBlockEntityUpdate(ClientboundBlockEntityDataPacket packet, CallbackInfo ci) {
-        if (packet.getType() == BlockEntityTypes.COMMAND_BLOCK) {
+        if (packet.getType() == BlockEntityType.COMMAND_BLOCK) {
             packet.getTag().getString("Command").ifPresent(
                     command -> CommandBlockManager.updateBlock(packet.getPos(), command));
         }

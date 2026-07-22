@@ -2,7 +2,7 @@ package doonv.entityselectortools.mixin.client;
 
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.config.ClientConfig;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +24,7 @@ public class AxiomToolIconOverrideMixin {
             "axiom", "gui/tool_swapper.png");
 
     @Inject(method = "blit256", at = @At("HEAD"), cancellable = true)
-    private static void onBlit256(GuiGraphicsExtractor guiGraphics, Identifier resourceLocation,
+    private static void onBlit256(GuiGraphics guiGraphics, Identifier resourceLocation,
                                   int x, int y, int u, int v, int w, int h,
                                   CallbackInfo ci) {
         if (!ClientConfig.get().boxCreationWithAxiomTool) return;

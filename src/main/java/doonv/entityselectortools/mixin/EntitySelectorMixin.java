@@ -5,7 +5,7 @@ import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.predicate.ConditionTreeWalker;
 import doonv.entityselectortools.predicate.PredicateKeyHolder;
 import doonv.entityselectortools.preview.EntitySelectorVolume;
-import net.minecraft.advancements.predicates.MinMaxBounds;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.resources.ResourceKey;
@@ -50,7 +50,7 @@ public abstract class EntitySelectorMixin implements PredicateKeyHolder {
             CommandSourceStack sender,
             CallbackInfoReturnable<?> cir,
             //~ if >=26.1 '"aABB"' -> '"absoluteAabb"'
-            @Local(name = "absoluteAabb") @Nullable AABB absoluteAabb
+            @Local(name = "aABB") @Nullable AABB absoluteAabb
     ) {
         double range = EntitySelectorTools.getMaxSelectorRange();
         if (this.predicateKey != null) {
