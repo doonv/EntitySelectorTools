@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.Nullable;
 //? if >=1.21.11
 import org.jspecify.annotations.NonNull;
 
@@ -14,9 +15,12 @@ import java.net.URI;
 
 public class MissingDepsScreen extends Screen {
     private static final boolean SINGLE_MISSING = EntitySelectorToolsDeps.AMECS_LOADED ^ EntitySelectorToolsDeps.YACL_LOADED;
+    private final @Nullable Screen parent;
 
-    public MissingDepsScreen() {
+    public MissingDepsScreen(@Nullable Screen parent) {
         super(Component.translatable("entityselectortools.missingDeps.title"));
+
+        this.parent = parent;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class MissingDepsScreen extends Screen {
                 }).bounds(this.width / 2 - (100 / 2) - 55, this.height - 50, 100, 20).build());
         this.addRenderableWidget(Button.builder(
                         Component.translatable("entityselectortools.missingDeps.skip"), (btn) -> {
-                            this.onClose();
+                            this.minecraft.gui.setScreen(parent);
                         })
                 .tooltip(Tooltip.create(Component.translatable("entityselectortools.missingDeps.skipTooltip")))
                 .bounds(this.width / 2 - (100 / 2) + 55, this.height - 50, 100, 20).build());

@@ -9,8 +9,8 @@ public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         if (EntitySelectorToolsDeps.ANY_MISSING)
-            return YACLModMenuIntegration.getModConfigScreenFactory();
+            return parent -> new MissingDepsScreen(parent);
         else
-            return parent -> new MissingDepsScreen();
+            return YACLModMenuIntegration.getModConfigScreenFactory();
     }
 }

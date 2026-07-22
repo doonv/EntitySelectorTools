@@ -30,6 +30,7 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
             EntitySelectorTools.path("controls"));
 
     private volatile boolean serverHasMod = false;
+
     private boolean depsScreenShown = false;
 
     public static void systemMessage(LocalPlayer player, Component component) {
@@ -51,8 +52,7 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
         if (EntitySelectorToolsDeps.ANY_MISSING) {
             ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
                 if (!depsScreenShown && screen instanceof TitleScreen) {
-                    client.setScreenAndShow(
-                            new MissingDepsScreen());
+                    client.setScreenAndShow(new MissingDepsScreen(screen));
                     depsScreenShown = true;
                 }
             });
