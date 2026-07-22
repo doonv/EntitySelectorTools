@@ -18,7 +18,7 @@ I'm open to any version suggestions.
 ## Dependencies
 
 - [Fabric API](https://modrinth.com/project/P7dR8mSH) is required.
-- [YetAnotherConfigLib](https://modrinth.com/project/1eAoo2KR) is required on the client.
+- [Yet Another Config Library](https://modrinth.com/project/1eAoo2KR) is required on the client.
 - [Amecs](https://modrinth.com/project/rcLriA4v) is required on the client.
 
 ## License
