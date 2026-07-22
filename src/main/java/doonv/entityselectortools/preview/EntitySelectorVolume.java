@@ -19,6 +19,7 @@ public record EntitySelectorVolume(Vec3 center, Optional<AABB> aabb, MinMaxBound
     }
 
     private static final int FROM_PREDICATE = 1;
+
     private static final int IS_SERVER = 2;
 
     public static void encode(RegistryFriendlyByteBuf buf, EntitySelectorVolume vol) {

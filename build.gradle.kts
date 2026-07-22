@@ -31,7 +31,9 @@ repositories {
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
 
     maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
-    maven("https://maven.terraformersmc.com/") { name = "Terraformers" }
+    // FIXME: Remove and uncomment terraformersmc maven when (or "if" atp) it's fixed.
+    strictMaven("https://maven.gnomecraft.net/releases", "Terraformers", "com.terraformersmc")
+    //maven("https://maven.terraformersmc.com/") { name = "Terraformers" }
     maven("https://maven.isxander.dev/releases") { name = "Xander Maven" }
     maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
     maven("https://maven.siphalor.de/") { name = "Siphalor's Maven" }

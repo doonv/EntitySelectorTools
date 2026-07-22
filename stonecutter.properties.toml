@@ -4,7 +4,7 @@ publish.curseforge = 1585354
 loomx.loom_version="1.17-SNAPSHOT"
 
 [mod]
-version = "1.0.0"
+version = "1.1.0"
 group = "doonv.entityselectortools"
 id = "entityselectortools"
 name = "Entity Selector Tools"

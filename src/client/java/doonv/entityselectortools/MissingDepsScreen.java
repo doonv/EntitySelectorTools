@@ -1,9 +1,8 @@
 package doonv.entityselectortools;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -14,35 +13,38 @@ import java.net.URI;
 
 
 public class MissingDepsScreen extends Screen {
-    public static final boolean YACL_LOADED = FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3");
-    public static final boolean AMECS_LOADED = FabricLoader.getInstance().isModLoaded("amecs_key_modifiers");
+    private static final boolean SINGLE_MISSING = EntitySelectorToolsDeps.AMECS_LOADED ^ EntitySelectorToolsDeps.YACL_LOADED;
 
-    private static final boolean ONE_MISSING = AMECS_LOADED || YACL_LOADED;
-
-    public MissingDepsScreen(Component title) {
-        super(title);
+    public MissingDepsScreen() {
+        super(Component.translatable("entityselectortools.missingDeps.title"));
     }
 
     @Override
     protected void init() {
-        assert !YACL_LOADED || !AMECS_LOADED;
+        assert EntitySelectorToolsDeps.ANY_MISSING;
 
         int centerX = this.width / 2 - (120 / 2);
         int y = this.height / 2 + 15;
-        if (!YACL_LOADED)
+        if (!EntitySelectorToolsDeps.YACL_LOADED)
             this.addRenderableWidget(Button.builder(Component.literal("Yet Another Config Lib"), (btn) -> {
                 ConfirmLinkScreen.confirmLinkNow(this, URI.create("https://modrinth.com/mod/yacl"));
-            }).bounds(ONE_MISSING ? centerX : centerX + 70, y, 120, 20).build());
+            }).bounds(SINGLE_MISSING ? centerX : centerX - 70, y, 120, 20).build());
 
-        if (!AMECS_LOADED)
+        if (!EntitySelectorToolsDeps.AMECS_LOADED)
             this.addRenderableWidget(Button.builder(Component.literal("Amecs"), (btn) -> {
                 ConfirmLinkScreen.confirmLinkNow(this, URI.create("https://modrinth.com/mod/amecs"));
-            }).bounds(ONE_MISSING ? centerX : centerX - 70, y, 120, 20).build());
+            }).bounds(SINGLE_MISSING ? centerX : centerX + 70, y, 120, 20).build());
 
         this.addRenderableWidget(
                 Button.builder(Component.translatable("entityselectortools.missingDeps.quit"), (btn) -> {
-                    Minecraft.getInstance().stop();
-                }).bounds(this.width / 2 - (100 / 2), this.height - 50, 100, 20).build());
+                    this.minecraft.stop();
+                }).bounds(this.width / 2 - (100 / 2) - 55, this.height - 50, 100, 20).build());
+        this.addRenderableWidget(Button.builder(
+                        Component.translatable("entityselectortools.missingDeps.skip"), (btn) -> {
+                            this.onClose();
+                        })
+                .tooltip(Tooltip.create(Component.translatable("entityselectortools.missingDeps.skipTooltip")))
+                .bounds(this.width / 2 - (100 / 2) + 55, this.height - 50, 100, 20).build());
     }
 
     //~ if >=26.1 'render' -> 'extractRenderState', 'drawCenteredString' -> 'centeredText' {
@@ -55,12 +57,19 @@ public class MissingDepsScreen extends Screen {
         int y = this.height / 2;
         graphics.centeredText(this.font, Component.translatable("entityselectortools.missingDeps.title"),
                 this.width / 2, y - 60, 0xFFFFFFFF);
-        graphics.centeredText(this.font, Component.translatable("entityselectortools.missingDeps.description" + (ONE_MISSING ? "Singular" : "")), x,
+        graphics.centeredText(this.font, Component.translatable(
+                        "entityselectortools.missingDeps.description" + (SINGLE_MISSING ? "Singular" : "")), x,
                 y - 30,
                 0xFFFFFFFF);
-        graphics.centeredText(this.font, Component.translatable("entityselectortools.missingDeps.hint" + (ONE_MISSING ? "Singular" : "")), x, y - 10,
+        graphics.centeredText(this.font,
+                Component.translatable("entityselectortools.missingDeps.hint" + (SINGLE_MISSING ? "Singular" : "")), x,
+                y - 10,
                 0xAAFFFFFF);
     }
     //~ }
 
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
 }

@@ -28,6 +28,7 @@ import java.util.Optional;
 
 @Mixin(EntitySelector.class)
 public abstract class EntitySelectorMixin implements PredicateKeyHolder {
+    @Unique
     private static final MinMaxBounds.Bounds<Double> ANY = MinMaxBounds.Doubles.ANY.bounds();
 
     @Shadow

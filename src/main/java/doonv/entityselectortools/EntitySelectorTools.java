@@ -34,6 +34,7 @@ public class EntitySelectorTools implements ModInitializer {
     public static final Identifier HANDSHAKE_CHANNEL = EntitySelectorTools.path("handshake");
 
     private static final Map<UUID, SemanticVersion> PLAYER_MOD_VERSIONS = new HashMap<>();
+
     /// Batches all selectors at once to send at the end of a tick.
     private static final Map<UUID, List<EntitySelectorVolume>> TICK_BATCH = new HashMap<>();
 
@@ -69,7 +70,8 @@ public class EntitySelectorTools implements ModInitializer {
     public void onInitialize() {
         //~ if >=26.1 'playS2C' -> 'clientboundPlay' {
         PayloadTypeRegistry.clientboundPlay().register(ServerSelectorPayload.TYPE, ServerSelectorPayload.CODEC);
-        PayloadTypeRegistry.clientboundPlay().register(LegacyDatapackSelectorPayload.TYPE, LegacyDatapackSelectorPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(LegacyDatapackSelectorPayload.TYPE,
+                LegacyDatapackSelectorPayload.CODEC);
         //~ }
 
         //~ if >=26.1 'playC2S' -> 'serverboundPlay'
@@ -87,15 +89,19 @@ public class EntitySelectorTools implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(ClientVersionPayload.TYPE, (payload, context) -> {
             try {
                 SemanticVersion version = SemanticVersion.parse(payload.version());
-                LOGGER.info("'{}' joined with Entity Selector Tools {}", context.player().getGameProfile().name(), version.getFriendlyString());
+                LOGGER.info("'{}' joined with Entity Selector Tools {}", context.player().getGameProfile().name(),
+                        version.getFriendlyString());
                 PLAYER_MOD_VERSIONS.put(context.player().getUUID(), version);
             } catch (VersionParsingException e) {
-                LOGGER.error("Failed to parse mod version from {} ({}): {}", context.player().getGameProfile().name(), context.player().getStringUUID(), payload.version());
+                LOGGER.error("Failed to parse mod version from {} ({}): {}", context.player().getGameProfile().name(),
+                        context.player().getStringUUID(), payload.version());
             }
         });
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            if (ServerPlayNetworking.canSend(handler.player, ServerSelectorPayload.TYPE) || ServerPlayNetworking.canSend(handler.player, LegacyDatapackSelectorPayload.TYPE)) {
+            if (ServerPlayNetworking.canSend(handler.player,
+                    ServerSelectorPayload.TYPE) || ServerPlayNetworking.canSend(handler.player,
+                    LegacyDatapackSelectorPayload.TYPE)) {
                 PLAYER_MOD_VERSIONS.put(handler.player.getUUID(), null);
             }
         });

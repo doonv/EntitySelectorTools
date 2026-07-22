@@ -30,6 +30,7 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
             EntitySelectorTools.path("controls"));
 
     private volatile boolean serverHasMod = false;
+    private boolean depsScreenShown = false;
 
     public static void systemMessage(LocalPlayer player, Component component) {
         //? if >=26.1 {
@@ -47,14 +48,17 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        if (!MissingDepsScreen.YACL_LOADED || !MissingDepsScreen.AMECS_LOADED) {
+        if (EntitySelectorToolsDeps.ANY_MISSING) {
             ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
-                if (screen instanceof TitleScreen)
+                if (!depsScreenShown && screen instanceof TitleScreen) {
                     client.setScreenAndShow(
-                            new MissingDepsScreen(Component.translatable("entityselectortools.missingDeps.title")));
+                            new MissingDepsScreen());
+                    depsScreenShown = true;
+                }
             });
             return; // Cancel rest of mod load to prevent crash
         }
+
         EntitySelectorToolsKeyMappings.register();
         ClientConfig.HANDLER.load();
 

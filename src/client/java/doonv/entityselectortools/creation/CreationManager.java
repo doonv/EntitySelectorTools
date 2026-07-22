@@ -42,8 +42,10 @@ public class CreationManager {
                 CreationManager.clear();
             }
 
-            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_SELECTOR_KEY, client, CreationManager::asSelector, "Selector");
-            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_PREDICATE_KEY, client, CreationManager::asPredicate, "Predicate");
+            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_SELECTOR_KEY, client, CreationManager::asSelector,
+                    "Selector");
+            copyFunctionality(EntitySelectorToolsKeyMappings.COPY_AS_PREDICATE_KEY, client,
+                    CreationManager::asPredicate, "Predicate");
         });
     }
 
@@ -125,8 +127,8 @@ public class CreationManager {
 
     public static Optional<String> asPredicate() {
         return volume().map(s -> """
-                "position": {"x": {"min": %.0f, "max": %.0f}, "y": {"min": %.0f, "max": %.0f}, "z": {"min": %.0f, "max": %.0f}}
-                """.formatted(s.minX, s.maxX, s.minY, s.maxY, s.minZ, s.maxZ));
+                "position": {"x": {"min": %.0f, "max": %.0f}, "y": {"min": %.0f, "max": %.0f}, "z": {"min": %.0f, "max": %.0f}}""".formatted(
+                s.minX, s.maxX, s.minY, s.maxY, s.minZ, s.maxZ));
     }
 
     public static boolean inWandCreationMode(LocalPlayer player) {

@@ -63,7 +63,7 @@ publishMods {
         accessToken = providers.environmentVariable("GITHUB_TOKEN")
         repository = "doonv/entityselectortools"
         commitish = "main" // This is the branch the release tag will be created from
-        tagName = "${property("mod.version")}"
+        tagName = "v${property("mod.version")}"
 
         // Allow the release to be initially created without any files.
         allowEmptyFiles = true

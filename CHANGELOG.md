@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-22
+
 ### Added
 
 - Predicate rendering!
@@ -36,8 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - "Copy Creation" keybinding renamed to "Copy Volume As Selector"
 - The keybinds shown in the volume creation tool are now shortened. (<kbd>Control</kbd> becomes <kbd>Ctrl</kbd>, and the spaces around <kbd>+</kbd> are removed)
-- Made the copy keybindings use [Amecs](https://modrinth.com/project/rcLriA4v) instead of being hardcoded to use <kbd>Control</kbd>. This does mean **Entity Selector Tools depends on Amecs** for now. I do want to make it optional though, so I'm still working on that.
-- Changed the color of inline code in the config screen to gold from light purple.
+- Made the copy keybindings use [Amecs](https://modrinth.com/project/rcLriA4v) instead of being hardcoded to use <kbd>Control</kbd>. This does mean **Entity Selector Tools depends on Amecs now**.
+- Changed the color of inline code in the config screen from light purple to gold.
 - If Axiom is loaded, its mouse icons are used instead of the name of the keybind.
 - *Box Creation as Axiom Tool* is now enabled by default.
 - Rewrote Axiom integration. 
@@ -47,9 +49,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - YACL being required on the server when it didn't need to be.
 
-## [1.0.0]
+## [1.0.0] - 2026-06-23
 
 Initial release.
 
-[Unreleased]: https://github.com/doonv/entityselectortools/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/doonv/entityselectortools/compare/v1.1.0...HEAD
+[1.0.1]: https://github.com/doonv/entityselectortools/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/doonv/entityselectortools/releases/tag/1.0.0

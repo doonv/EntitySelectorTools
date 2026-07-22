@@ -39,7 +39,7 @@
     "fabric-api": "*"
   },
   "recommends": {
-    "yet_another_config_lib_v3": "~${yacl}",
-    "amecs_key_modifiers": "~${amecs_key_modifiers}"
+    "yet_another_config_lib_v3": "^${yacl}",
+    "amecs_key_modifiers": "^${amecs_key_modifiers}"
   }
 }

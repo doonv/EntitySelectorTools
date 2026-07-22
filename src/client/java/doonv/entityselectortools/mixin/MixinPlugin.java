@@ -1,5 +1,6 @@
 package doonv.entityselectortools.mixin;
 
+import doonv.entityselectortools.EntitySelectorToolsDeps;
 import doonv.entityselectortools.compat.AxiomCompat;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
@@ -20,6 +21,7 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (EntitySelectorToolsDeps.ANY_MISSING && mixinClassName.contains("client")) return false;
         if (mixinClassName.contains("Axiom")) {
             return AxiomCompat.isAxiomLoaded();
         }

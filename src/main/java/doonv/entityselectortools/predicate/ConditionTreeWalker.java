@@ -5,7 +5,6 @@ import doonv.entityselectortools.mixin.accessor.CompositeLootItemConditionAccess
 import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.loot.predicates.CompositeLootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.InvertedLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.phys.AABB;
@@ -42,12 +41,14 @@ public class ConditionTreeWalker {
     }
 
     private static void walk(LootItemCondition condition, List<AABB> boxes) {
-        if (condition instanceof LocationCheck loc) {
-            extract(loc, boxes);
-        } else if (condition instanceof CompositeLootItemCondition comp) {
-            for (LootItemCondition term : ((CompositeLootItemConditionAccessor) comp).getTerms()) {
-                walk(term, boxes);
+        switch (condition) {
+            case LocationCheck loc -> extract(loc, boxes);
+            case CompositeLootItemCondition comp -> {
+                for (LootItemCondition term : ((CompositeLootItemConditionAccessor) comp).getTerms()) {
+                    walk(term, boxes);
+                }
             }
+            default -> {}
         }
     }
 

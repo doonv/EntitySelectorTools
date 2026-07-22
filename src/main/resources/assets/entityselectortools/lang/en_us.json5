@@ -21,7 +21,9 @@
         "descriptionSingular": "The following client-side dependency isn't installed:",
         "hint": "Click the buttons to open their download pages.",
         "hintSingular": "Click the button to open its download page.",
-        "quit": "Quit Game"
+        "quit": "Quit Game",
+        "skip": "Skip",
+        "skipTooltip": "Entity Selector Tool's features will not work!"
     },
     "yacl3.config.entityselectortools:config": {
         "category.preview": "Preview",
