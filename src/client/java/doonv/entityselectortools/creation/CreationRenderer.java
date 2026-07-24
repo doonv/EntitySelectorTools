@@ -1,8 +1,8 @@
 package doonv.entityselectortools.creation;
 
 import doonv.entityselectortools.config.ClientConfig;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
@@ -55,10 +55,10 @@ public class CreationRenderer {
 
 
     public static void register() {
-        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(CreationRenderer::render);
+        LevelRenderEvents.BEFORE_GIZMOS.register(CreationRenderer::render);
     }
 
-    public static void render(WorldRenderContext context) {
+    public static void render(LevelRenderContext context) {
         if (!(Minecraft.getInstance().player instanceof LocalPlayer player && context.gameRenderer() instanceof GameRenderer renderer))
             return;
         if (!CreationManager.inWandCreationMode(player)) {
@@ -72,7 +72,7 @@ public class CreationRenderer {
         //? if >=1.21.11 {
         CreationManager.volume().ifPresent(volume -> {
             //~ if >=26.2 'timeSource.' -> 'timeSource().'
-            double secs = (double) Util.timeSource.get(TimeUnit.MICROSECONDS) / 500000;
+            double secs = (double) Util.timeSource().get(TimeUnit.MICROSECONDS) / 500000;
             int bgColor = RenderUtils.multiplyAlpha(config.selectionColor,
                     ((float) Math.sin(secs) + 1.3f) / 6).getRGB();
             Gizmos.cuboid(volume, GizmoStyle.strokeAndFill(config.selectionColor.getRGB(), 2.5F, bgColor));

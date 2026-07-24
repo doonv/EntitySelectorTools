@@ -69,13 +69,13 @@ public class EntitySelectorTools implements ModInitializer {
     @Override
     public void onInitialize() {
         //~ if >=26.1 'playS2C' -> 'clientboundPlay' {
-        PayloadTypeRegistry.playS2C().register(ServerSelectorPayload.TYPE, ServerSelectorPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(LegacyDatapackSelectorPayload.TYPE,
+        PayloadTypeRegistry.clientboundPlay().register(ServerSelectorPayload.TYPE, ServerSelectorPayload.CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(LegacyDatapackSelectorPayload.TYPE,
                 LegacyDatapackSelectorPayload.CODEC);
         //~ }
 
         //~ if >=26.1 'playC2S' -> 'serverboundPlay'
-        PayloadTypeRegistry.playC2S().register(ClientVersionPayload.TYPE, ClientVersionPayload.CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ClientVersionPayload.TYPE, ClientVersionPayload.CODEC);
 
         ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) ->
                 sender.sendPacket(HANDSHAKE_CHANNEL, new FriendlyByteBuf(Unpooled.EMPTY_BUFFER))

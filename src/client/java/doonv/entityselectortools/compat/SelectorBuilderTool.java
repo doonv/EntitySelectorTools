@@ -17,10 +17,10 @@ import java.util.EnumSet;
 import java.util.List;
 
 //? if >=26.1 {
-/*import net.minecraft.client.gui.GuiGraphics;
-*///?} else {
-import net.minecraft.client.gui.GuiGraphics;
- //?}
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+//?} else {
+/*import net.minecraft.client.gui.GuiGraphicsExtractor;
+ *///?}
 
 public class SelectorBuilderTool implements BuilderTool {
     private static final List<String> EMPTY_HINTS = List.of();
@@ -46,7 +46,7 @@ public class SelectorBuilderTool implements BuilderTool {
     }
 
     @Override
-    public void renderScreen(GuiGraphics guiGraphics, int screenWidth, int screenHeight, float partialTick) {
+    public void renderScreen(GuiGraphicsExtractor guiGraphics, int screenWidth, int screenHeight, float partialTick) {
         CreationHudRenderer.renderHints(guiGraphics);
     }
 

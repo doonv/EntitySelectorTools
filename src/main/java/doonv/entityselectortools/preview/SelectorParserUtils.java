@@ -2,7 +2,7 @@ package doonv.entityselectortools.preview;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.commands.arguments.selector.EntitySelectorParser;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;

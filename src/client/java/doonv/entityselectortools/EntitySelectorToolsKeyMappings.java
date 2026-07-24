@@ -4,13 +4,13 @@ import com.mojang.blaze3d.platform.InputConstants;
 import de.siphalor.amecs.key_modifiers.api.AmecsKeyMappingWithKeyModifiers;
 import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifierCombination;
 import de.siphalor.amecs.key_modifiers.api.AmecsKeyModifiers;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 
 /// Separate class so [EntitySelectorToolsClient] doesn't immediately load in Amecs.
 public class EntitySelectorToolsKeyMappings {
-    public static final KeyMapping COPY_AS_SELECTOR_KEY = KeyBindingHelper.registerKeyBinding(
+    public static final KeyMapping COPY_AS_SELECTOR_KEY = KeyMappingHelper.registerKeyMapping(
             new AmecsKeyMappingWithKeyModifiers(
                     "key.%s.copyVolumeAsSelector".formatted(EntitySelectorTools.MOD_ID),
                     InputConstants.Type.KEYSYM,
@@ -19,7 +19,7 @@ public class EntitySelectorToolsKeyMappings {
             )
     );
 
-    public static final KeyMapping COPY_AS_PREDICATE_KEY = KeyBindingHelper.registerKeyBinding(
+    public static final KeyMapping COPY_AS_PREDICATE_KEY = KeyMappingHelper.registerKeyMapping(
             new AmecsKeyMappingWithKeyModifiers(
                     "key.%s.copyVolumeAsPredicate".formatted(EntitySelectorTools.MOD_ID),
                     InputConstants.Type.KEYSYM,

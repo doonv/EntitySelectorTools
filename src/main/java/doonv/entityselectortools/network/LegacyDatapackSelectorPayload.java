@@ -3,7 +3,7 @@ package doonv.entityselectortools.network;
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.preview.EntitySelectorVolume;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

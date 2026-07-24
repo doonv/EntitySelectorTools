@@ -3,7 +3,7 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "2.0.+"
 }
 
-stonecutter active "1.21.11"
+stonecutter active "26.2"
 
 // Make newer versions be published last
 stonecutter tasks {

@@ -3,7 +3,7 @@ package doonv.entityselectortools.mixin;
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.predicate.ConditionTreeWalker;
 import doonv.entityselectortools.preview.EntitySelectorVolume;
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.Holder;
 import net.minecraft.server.commands.ExecuteCommand;

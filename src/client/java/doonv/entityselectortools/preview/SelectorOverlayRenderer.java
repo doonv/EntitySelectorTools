@@ -1,8 +1,8 @@
 package doonv.entityselectortools.preview;
 
 import doonv.entityselectortools.config.ClientConfig;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderContext;
-import net.fabricmc.fabric.api.client.rendering.v1.world.WorldRenderEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -50,7 +50,7 @@ public class SelectorOverlayRenderer {
     }
 
     public static void register() {
-        WorldRenderEvents.BEFORE_DEBUG_RENDER.register(SelectorOverlayRenderer::render);
+        LevelRenderEvents.BEFORE_GIZMOS.register(SelectorOverlayRenderer::render);
     }
 
     public static void removeMinecartEntry(int entityId) {
@@ -65,15 +65,15 @@ public class SelectorOverlayRenderer {
     }
 
     //? if >=1.21.11 {
-    private static void render(WorldRenderContext context) {
+    private static void render(LevelRenderContext context) {
         ClientConfig config = ClientConfig.get();
         if (!(context.gameRenderer() instanceof GameRenderer renderer)) return;
 
         //~ if >=26.2 'getMainCamera()' -> 'mainCamera()'
-        Camera camera = renderer.getMainCamera();
+        Camera camera = renderer.mainCamera();
 
         if (ClientConfig.get().commandBlockVolumesEnabled) {
-            COMMAND_BLOCK_SELECTORS.forEach((_unused, volumes) -> {
+            COMMAND_BLOCK_SELECTORS.forEach((_, volumes) -> {
                 for (EntitySelectorVolume volume : volumes) {
                     renderVolume(volume, camera, config);
                 }
@@ -137,7 +137,7 @@ public class SelectorOverlayRenderer {
         });
     }
     //?} else {
-    /*private static void render(WorldRenderContext context) {
+    /*private static void render(LevelRenderContext context) {
         PoseStack poseStack = context.matrices();
         Camera camera = context.gameRenderer().getMainCamera();
         Vec3 cameraPos = camera.getPosition();

@@ -1,6 +1,6 @@
 package doonv.entityselectortools.preview;
 
-import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.advancements.predicates.MinMaxBounds;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 

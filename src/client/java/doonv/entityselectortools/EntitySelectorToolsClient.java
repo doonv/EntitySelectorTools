@@ -35,16 +35,16 @@ public class EntitySelectorToolsClient implements ClientModInitializer {
 
     public static void systemMessage(LocalPlayer player, Component component) {
         //? if >=26.1 {
-        /*player.sendSystemMessage(component);
-        *///?} else
-        player.displayClientMessage(component, false);
+        player.sendSystemMessage(component);
+        //?} else
+        //player.displayClientMessage(component, false);
     }
 
     public static void overlayMessage(LocalPlayer player, Component component) {
         //? if >=26.1 {
-        /*player.sendOverlayMessage(component);
-        *///?} else
-        player.displayClientMessage(component, true);
+        player.sendOverlayMessage(component);
+        //?} else
+        //player.displayClientMessage(component, true);
     }
 
     @Override

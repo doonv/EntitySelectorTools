@@ -22,7 +22,7 @@ public class MinecraftMixin {
     public int missTime;
 
     //~ if >=26.1 'pickBlock' -> 'pickBlockOrEntity'
-    @Inject(method = "pickBlock", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "pickBlockOrEntity", at = @At("HEAD"), cancellable = true)
     private void middleClickExtendVolumeSelect(CallbackInfo ci) {
         if (this.player == null || !CreationManager.inWandCreationMode(this.player)) return;
 

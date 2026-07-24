@@ -3,7 +3,7 @@ package doonv.entityselectortools.creation;
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.EntitySelectorToolsKeyMappings;
 import doonv.entityselectortools.compat.AxiomCompat;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.minecraft.client.DeltaTracker;
@@ -11,7 +11,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -37,7 +37,7 @@ public class CreationHudRenderer {
         );
     }
 
-    private static void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    private static void render(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         if (AxiomCompat.isSelectorBuilderToolActive()) return;
 
         Minecraft minecraft = Minecraft.getInstance();
@@ -48,7 +48,7 @@ public class CreationHudRenderer {
     }
 
     private static @Nullable Identifier axiomIconFor(KeyMapping keyMapping) {
-        InputConstants.Key boundKey = KeyBindingHelper.getBoundKeyOf(keyMapping);
+        InputConstants.Key boundKey = KeyMappingHelper.getBoundKeyOf(keyMapping);
         if (boundKey.getType() == InputConstants.Type.MOUSE) {
             return switch (boundKey.getValue()) {
                 case 0 -> AXIOM_LEFT_MOUSE;
@@ -60,12 +60,12 @@ public class CreationHudRenderer {
         return null;
     }
 
-    private static void renderHintLine(GuiGraphics guiGraphics, Font font, int x, int y, Component label, KeyMapping keyMapping) {
+    private static void renderHintLine(GuiGraphicsExtractor guiGraphics, Font font, int x, int y, Component label, KeyMapping keyMapping) {
         Identifier axiomIcon = axiomIconFor(keyMapping);
         if (axiomIcon != null && AxiomCompat.isAxiomLoaded()) {
             int width = font.width(label);
             //~ if >=26.1 'drawString' -> 'text'
-            guiGraphics.drawString(font, label, x - width / 2, y, 0x80FFFFFF);
+            guiGraphics.text(font, label, x - width / 2, y, 0x80FFFFFF);
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, axiomIcon, x - width / 2 - 16, y - 4, 0, 0, 16, 16, 16, 16,
                     0x80FFFFFF);
         } else {
@@ -74,11 +74,11 @@ public class CreationHudRenderer {
                     .append("] ")
                     .append(label);
             //~ if >=26.1 'drawCenteredString' -> 'centeredText'
-            guiGraphics.drawCenteredString(font, text, x, y, 0x80FFFFFF);
+            guiGraphics.centeredText(font, text, x, y, 0x80FFFFFF);
         }
     }
 
-    public static void renderHints(GuiGraphics guiGraphics) {
+    public static void renderHints(GuiGraphicsExtractor guiGraphics) {
         int x = guiGraphics.guiWidth() / 2;
         int y = (guiGraphics.guiHeight() / 2) + 13;
 
