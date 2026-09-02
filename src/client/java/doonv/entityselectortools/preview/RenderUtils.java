@@ -10,8 +10,8 @@ import org.jspecify.annotations.NonNull;
 
 import java.awt.*;
 //? } else {
-
-/*import com.mojang.blaze3d.vertex.PoseStack;
+/*
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 *///?}
@@ -112,8 +112,8 @@ public class RenderUtils {
         }
     }
     //?} else {
-
-    /*/^*
+/*
+    /^*
      * Renders a low-clutter sphere gizmo using 3 intersecting orthogonal rings (XY, XZ, YZ planes).
      * Ideal for visualizing ranges, radiuses, and spherical boundaries without screen clutter.
      * Ensure the VertexConsumer is set up for line segments (e.g., RenderType.lines()).

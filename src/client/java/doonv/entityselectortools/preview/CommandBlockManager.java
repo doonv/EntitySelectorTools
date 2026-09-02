@@ -50,8 +50,8 @@ public class CommandBlockManager {
         //? if >=1.21.11 {
         return player.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.GAMEMASTERS));
         //?} else {
-        /*return player.getPermissionLevel() >= 2;
-         *///?}
+        //return player.getPermissionLevel() >= 2;
+         //?}
     }
 
     public static void clear() {

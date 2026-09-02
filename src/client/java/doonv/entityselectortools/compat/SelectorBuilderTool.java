@@ -19,8 +19,8 @@ import java.util.List;
 //? if >=26.1 {
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 //?} else {
-/*import net.minecraft.client.gui.GuiGraphicsExtractor;
- *///?}
+//import net.minecraft.client.gui.GuiGraphicsExtractor;
+ //?}
 
 public class SelectorBuilderTool implements BuilderTool {
     private static final List<String> EMPTY_HINTS = List.of();
