@@ -15,20 +15,29 @@ trim_trailing_whitespace = false
 
 [*.json]
 indent_style = space
-indent_size = 2
+indent_size = 4
 
 [*.properties]
 indent_style = space
 indent_size = 2
+ij_properties_keep_blank_lines = true
 
 [.editorconfig]
 indent_style = space
 
 [*.java]
+max_line_length = 120
 ij_java_use_single_class_imports = true
 ij_continuation_indent_size = 8
 ij_java_class_count_to_use_import_on_demand = 999
 ij_java_names_count_to_use_import_on_demand = 999
+ij_java_blank_lines_around_field = 1
+ij_java_blank_lines_around_field_with_annotations = 1
+ij_java_call_parameters_wrap = normal
+ij_java_keep_simple_blocks_in_one_line = true
+ij_java_keep_simple_methods_in_one_line = true
+ij_java_keep_simple_lambdas_in_one_line = true
+ij_java_keep_simple_classes_in_one_line = true
 
 [*.{yml,yaml}]
 indent_style = space

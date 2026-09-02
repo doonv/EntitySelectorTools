@@ -15,6 +15,7 @@ import java.net.URI;
 
 public class MissingDepsScreen extends Screen {
     private static final boolean SINGLE_MISSING = EntitySelectorToolsDeps.AMECS_LOADED ^ EntitySelectorToolsDeps.YACL_LOADED;
+
     private final @Nullable Screen parent;
 
     public MissingDepsScreen(@Nullable Screen parent) {

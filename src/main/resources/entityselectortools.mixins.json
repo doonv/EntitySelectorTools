@@ -1,17 +1,17 @@
 {
-  "required": true,
-  "package": "doonv.entityselectortools.mixin",
-  "compatibilityLevel": "${java}",
-  "mixins": [
-    "EntitySelectorMixin",
-    "EntitySelectorParserMixin",
-    "ExecuteCommandMixin",
-    "accessor.CompositeLootItemConditionAccessor"
-  ],
-  "injectors": {
-    "defaultRequire": 1
-  },
-  "overwrites": {
-    "requireAnnotations": true
-  }
+    "required": true,
+    "package": "doonv.entityselectortools.mixin",
+    "compatibilityLevel": "${java}",
+    "mixins": [
+        "EntitySelectorMixin",
+        "EntitySelectorParserMixin",
+        "ExecuteCommandMixin",
+        "accessor.CompositeLootItemConditionAccessor"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "overwrites": {
+        "requireAnnotations": true
+    }
 }
