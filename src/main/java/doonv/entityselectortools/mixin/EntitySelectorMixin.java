@@ -49,7 +49,7 @@ public abstract class EntitySelectorMixin implements PredicateKeyHolder {
     private void onSpatialSearch(
             CommandSourceStack sender,
             CallbackInfoReturnable<?> cir,
-            //~ if >=26.1 '"aABB"' -> '"absoluteAabb"'
+            //~ if >=26.1 'ordinal = 0' -> 'name = "absoluteAabb"'
             @Local(name = "absoluteAabb") @Nullable AABB absoluteAabb
     ) {
         double range = EntitySelectorTools.getMaxSelectorRange();
