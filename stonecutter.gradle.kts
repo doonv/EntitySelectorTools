@@ -1,9 +1,9 @@
 plugins {
     id("dev.kikugie.stonecutter")
-    id("me.modmuss50.mod-publish-plugin") version "2.0.+"
+    id("me.modmuss50.mod-publish-plugin") version "2.2.1"
 }
 
-stonecutter active "26.2"
+stonecutter active "26.3"
 
 // Make newer versions be published last
 stonecutter tasks {
@@ -49,6 +49,9 @@ stonecutter parameters {
         string(current.parsed >= "26.2") {
             replace("net.minecraft.advancements.criterion", "net.minecraft.advancements.predicates")
             replace("BlockEntityType", "BlockEntityTypes")
+        }
+        string(current.parsed >= "26.3") {
+            replace("InputConstants.Type.KEYSYM", "InputConstants.Type.KEYBOARD")
         }
     }
 }

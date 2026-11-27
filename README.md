@@ -12,7 +12,7 @@ Tools for viewing and creating entity volume selectors (like `@e[dx=3,dy=5,dz=2]
 
 ## Supported versions
 
-Currently, the supported versions are: **26.2**, **26.1.x**, and **1.21.11-10**. Fabric only at the moment.
+Currently, the supported versions are: **26.3**, **26.2**, **26.1.x**, and **1.21.11-10**. Fabric only at the moment.
 I'm open to any version suggestions.
 
 ## Dependencies

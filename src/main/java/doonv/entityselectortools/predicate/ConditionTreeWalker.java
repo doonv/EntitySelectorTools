@@ -3,7 +3,8 @@ package doonv.entityselectortools.predicate;
 import doonv.entityselectortools.EntitySelectorTools;
 import doonv.entityselectortools.mixin.accessor.CompositeLootItemConditionAccessor;
 import net.minecraft.advancements.predicates.MinMaxBounds;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.storage.loot.predicates.CompositeLootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -44,8 +45,12 @@ public class ConditionTreeWalker {
         switch (condition) {
             case LocationCheck loc -> extract(loc, boxes);
             case CompositeLootItemCondition comp -> {
-                for (LootItemCondition term : ((CompositeLootItemConditionAccessor) comp).getTerms()) {
-                    walk(term, boxes);
+                //~ if >=26.3 'LootItemCondition term' -> 'Holder<LootItemCondition> term'
+                for (Holder<LootItemCondition> term : ((CompositeLootItemConditionAccessor) comp).getTerms()) {
+                    //? if >=26.3 {
+                    if (term.isBound()) walk(term.value(), boxes);
+                    //?} else
+                    //walk(term, boxes);
                 }
             }
             default -> {}
@@ -65,7 +70,7 @@ public class ConditionTreeWalker {
                 if (x.min().isPresent() && x.max().isPresent()
                         && y.min().isPresent() && y.max().isPresent()
                         && z.min().isPresent() && z.max().isPresent()) {
-                    BlockPos offset = loc.offset();
+                    Vec3i offset = loc.offset();
                     boxes.add(new AABB(
                             x.min().get() + offset.getX(),
                             y.min().get() + offset.getY(),
