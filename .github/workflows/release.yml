@@ -14,7 +14,7 @@ jobs:
       image: mcr.microsoft.com/openjdk/jdk:25-ubuntu
       options: --user root
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - run: ./gradlew build publishMods
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

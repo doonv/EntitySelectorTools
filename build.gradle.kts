@@ -4,7 +4,7 @@ plugins {
     // `maven-publish`
     id("me.modmuss50.mod-publish-plugin")
 
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.23"
 }
 
 version = "${property("mod.version")}+${property("mod.mc_title")}"
@@ -31,9 +31,7 @@ repositories {
     strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
 
     maven("https://maven.parchmentmc.org") { name = "ParchmentMC" }
-    // FIXME: Remove and uncomment terraformersmc maven when (or "if" atp) it's fixed.
-    strictMaven("https://maven.gnomecraft.net/releases", "Terraformers", "com.terraformersmc")
-    //maven("https://maven.terraformersmc.com/") { name = "Terraformers" }
+    strictMaven("https://maven.terraformersmc.com/", "Terraformers", "com.terraformersmc")
     maven("https://maven.isxander.dev/releases") { name = "Xander Maven" }
     maven("https://maven.nucleoid.xyz/") { name = "Nucleoid" }
     maven("https://maven.siphalor.de/") { name = "Siphalor's Maven" }
@@ -73,13 +71,9 @@ fletchingTable {
 }
 
 dependencies {
+    val fabricApiVersion = "${property("deps.fabric_api")}+${sc.current.version}"
     fun fapi(vararg modules: String) {
-        for (it in modules) modImplementation(
-            fabricApi.module(
-                it,
-                "${property("deps.fabric_api")}+${sc.current.version}"
-            )
-        )
+        for (it in modules) modImplementation(fabricApi.module(it, fabricApiVersion))
     }
 
     minecraft("com.mojang:minecraft:${sc.current.version}")
@@ -112,8 +106,12 @@ dependencies {
 
     fapi(
         "fabric-lifecycle-events-v1",
-        "fabric-networking-api-v1"
+        "fabric-networking-api-v1",
+        "fabric-rendering-v1",
+        "fabric-screen-api-v1",
+        if (sc.current.parsed >= "26.1") "fabric-key-mapping-api-v1" else "fabric-key-binding-api-v1"
     )
+    modLocalRuntime("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
 }
 
 java {

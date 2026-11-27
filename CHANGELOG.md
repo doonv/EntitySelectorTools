@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support for Minecraft 26.3.
+
+### Changed
+
+- Updated dependencies (Fabric Loader 0.20.1, Fabric API, YACL, Mod Menu, Amecs).
+
 ## [1.1.1] - 2026-09-02
 
 ### Fixed
@@ -60,6 +68,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Initial release.
 
 [Unreleased]: https://github.com/doonv/entityselectortools/compare/v1.1.1...HEAD
-[1.1.0]: https://github.com/doonv/entityselectortools/compare/v1.1.0...v1.1.1
+[1.1.1]: https://github.com/doonv/entityselectortools/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/doonv/entityselectortools/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/doonv/entityselectortools/releases/tag/1.0.0
+[1.0.0]: https://github.com/doonv/entityselectortools/releases/tag/v1.0.0

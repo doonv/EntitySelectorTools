@@ -5,10 +5,12 @@ import net.minecraft.world.level.storage.loot.predicates.CompositeLootItemCondit
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.List;
+//~ if >=26.3 'java.util.List' -> 'net.minecraft.core.HolderSet'
+import net.minecraft.core.HolderSet;
 
 @Mixin(CompositeLootItemCondition.class)
 public interface CompositeLootItemConditionAccessor {
     @Accessor("terms")
-    List<LootItemCondition> getTerms();
+    //~ if >=26.3 'List' -> 'HolderSet'
+    HolderSet<LootItemCondition> getTerms();
 }
